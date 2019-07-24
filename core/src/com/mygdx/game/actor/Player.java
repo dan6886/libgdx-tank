@@ -6,13 +6,9 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.UserData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +20,7 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
     private int direction = Input.Keys.W;
     List<Integer> noPassDirection = new ArrayList<Integer>();
     private MyGdxGame game;
-    private Body body;
+    private int firePosition = 10;
 
     public Player(TextureRegion region, MyGdxGame game) {
         super();
@@ -42,30 +38,18 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
         boolean isPressedDown = Gdx.input.isKeyPressed(Input.Keys.S);
         boolean isPressedLeft = Gdx.input.isKeyPressed(Input.Keys.A);
         boolean isPressedRight = Gdx.input.isKeyPressed(Input.Keys.D);
-        if (isPressedUp && !noPassDirection.contains(Input.Keys.W)) {
+        if (isPressedUp && game.isCanMove(this, Input.Keys.W)) {
             setY(getY() + speed);
             direction = Input.Keys.W;
-        } else if (isPressedDown && !noPassDirection.contains(Input.Keys.S)) {
+        } else if (isPressedDown && game.isCanMove(this, Input.Keys.S)) {
             setY(getY() - speed);
             direction = Input.Keys.S;
-        } else if (isPressedLeft && !noPassDirection.contains(Input.Keys.A)) {
+        } else if (isPressedLeft && game.isCanMove(this, Input.Keys.A)) {
             setX(getX() - speed);
             direction = Input.Keys.A;
-        } else if (isPressedRight && !noPassDirection.contains(Input.Keys.D)) {
+        } else if (isPressedRight && game.isCanMove(this, Input.Keys.D)) {
             setX(getX() + speed);
             direction = Input.Keys.D;
-        }
-    }
-
-    public void setForbidden(int direction) {
-        if (!noPassDirection.contains(direction)) {
-            noPassDirection.add(direction);
-        }
-    }
-
-    public void setPass(int direction) {
-        if (noPassDirection.contains(direction)) {
-            noPassDirection.remove(Integer.valueOf(direction));
         }
     }
 
@@ -76,7 +60,6 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
             return;
         }
         batch.draw(region, getX(), getY());
-        body.setTransform(getX() + region.getRegionWidth() / 2, getY() + region.getRegionHeight() / 2, 0);
 
     }
 
@@ -87,35 +70,47 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
 
     @Override
     public void makeBody(World world) {
+    }
 
-        BodyDef bodyGroundDef = new BodyDef();
-        // 只有动态的才能碰撞
-        bodyGroundDef.type = BodyDef.BodyType.DynamicBody;
-        bodyGroundDef.position.set(getX(), getY());
-        bodyGroundDef.awake = true;
+    public void fire() {
+        Bullet bullet = game.pool.obtain();
+        Vector2 headPosition = getHeadPosition();
+        bullet.setCenterInPosition(headPosition.x, headPosition.y);
+        bullet.setActive(true);
+        bullet.setDirection(direction);
+        bullet.setType(Bullet.ENMEY_BULLET);
+        this.getStage().addActor(bullet);
+        game.runningBullet.add(bullet);
+    }
 
-        body = world.createBody(bodyGroundDef);
-        PolygonShape shapeGround = new PolygonShape();
-        shapeGround.setAsBox(region.getRegionWidth() / 2, getHeight() / 2);
-        body.createFixture(shapeGround, 1);
-        body.setUserData(new UserData.Builder().setName(getType()).append("obj", this).build());
+    private Vector2 getHeadPosition() {
+        Vector2 v = new Vector2();
+        switch (direction) {
+            case Input.Keys.W:
+                v.x = getX() + getWidth() / 2;
+                v.y = getY() + getHeight() + firePosition;
+                break;
+            case Input.Keys.S:
+                v.x = getX() + getWidth() / 2;
+                v.y = getY() + -firePosition;
+                break;
+            case Input.Keys.A:
+                v.x = getX() - firePosition;
+                v.y = getY() + getHeight() / 2;
+                break;
+            case Input.Keys.D:
+                v.x = getX() + getWidth() + firePosition;
+                v.y = getY() + getHeight() / 2;
+                break;
+        }
+        return v;
     }
 
     @Override
     public boolean keyDown(int keycode) {
-//        System.out.println("keydown" + keycode);
         switch (keycode) {
-            case 19:
-                setY(getY() + 16);
-                break;
-            case 20:
-                setY(getY() - 16);
-                break;
-            case 21:
-                setX(getX() - 16);
-                break;
-            case 22:
-                setX(getX() + 16);
+            case Input.Keys.SPACE:
+                fire();
                 break;
         }
         return true;

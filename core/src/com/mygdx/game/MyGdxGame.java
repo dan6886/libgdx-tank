@@ -14,16 +14,17 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Pool;
+import com.mygdx.game.actor.Bullet;
 import com.mygdx.game.actor.Player;
-
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MyGdxGame extends ApplicationAdapter {
     SpriteBatch batch;
@@ -36,8 +37,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private Player player;
     private Stage stage;
     TiledMapTileLayer mapLayer;
-    private Box2DDebugRenderer debugRenderer;
-    private World world;
+    public Pool<Bullet> pool;
+    public List<Bullet> runningBullet = new ArrayList<Bullet>();
 
     @Override
     public void create() {
@@ -45,7 +46,8 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.input.setInputProcessor(stage);
 
         batch = new SpriteBatch();
-        img = new Texture("badlogic.jpg");
+        img = new Texture("tank_atlas.png");
+        final TextureRegion b = new TextureRegion(img, 192, 32, 8, 8);
         int width = Gdx.graphics.getWidth();
 //        int width = 160;
         int height = Gdx.graphics.getHeight();
@@ -62,85 +64,36 @@ public class MyGdxGame extends ApplicationAdapter {
 
 
         renderer = new OrthogonalTiledMapRenderer(map);
-        world = new World(new Vector2(0, 0), false);
-        debugRenderer = new Box2DDebugRenderer();
+
         init();
-
-        world.setContactListener(new ContactListener() {
+        pool = new Pool<Bullet>(8) {
             @Override
-            public void beginContact(Contact contact) {
-                System.out.println("begin");
-                UserData userDataA = (UserData) contact.getFixtureA().getBody().getUserData();
-                UserData userDataB = (UserData) contact.getFixtureB().getBody().getUserData();
-                System.out.println(userDataA + "|" + userDataB);
-                Vector2[] points = contact.getWorldManifold().getPoints();
-                if ("wall".equals(userDataA.name) && "Player".equals(userDataB.name)) {
-                    Player player = userDataB.map.get("obj", Player.class);
-                    int direction = CollisionUtils.getContactDirection(points, player.getRectangle());
-                    player.setForbidden(direction);
-                    System.out.println(direction);
-                } else if ("wall".equals(userDataB.name) && "Player".equals(userDataA.name)) {
-                    Player player = userDataA.map.get("obj", Player.class);
-                    int direction = CollisionUtils.getContactDirection(points, player.getRectangle());
-                    player.setForbidden(direction);
-                    System.out.println(direction);
-                }
+            protected Bullet newObject() {
+                TextureRegion region = map.getTileSets().getTileSet(0).getTile(114).getTextureRegion();
+                return new Bullet(b);
             }
+        };
 
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
             @Override
-            public void endContact(Contact contact) {
-                UserData userDataA = (UserData) contact.getFixtureA().getBody().getUserData();
-                UserData userDataB = (UserData) contact.getFixtureB().getBody().getUserData();
-                System.out.println(userDataA + "|" + userDataB);
-                Vector2[] points = contact.getWorldManifold().getPoints();
-                if ("wall".equals(userDataA.name) && "Player".equals(userDataB.name)) {
-                    Player player = userDataB.map.get("obj", Player.class);
-                    int direction = CollisionUtils.getContactDirection(points, player.getRectangle());
-                    player.setPass(direction);
-                    System.out.println(direction);
-                } else if ("wall".equals(userDataB.name) && "Player".equals(userDataA.name)) {
-                    Player player = userDataA.map.get("obj", Player.class);
-                    int direction = CollisionUtils.getContactDirection(points, player.getRectangle());
-                    player.setPass(direction);
-                    System.out.println(direction);
-                }
-                System.out.println("end");
+            public void run() {
+                Bullet bullet = pool.obtain();
+                bullet.setPosition(50, 50);
+                bullet.setActive(true);
+                bullet.setDirection(Input.Keys.W);
+                bullet.setType(Bullet.ENMEY_BULLET);
+                stage.addActor(bullet);
+                runningBullet.add(bullet);
             }
-
-            @Override
-            public void preSolve(Contact contact, Manifold oldManifold) {
-//                System.out.println("presolve");
-            }
-
-            @Override
-            public void postSolve(Contact contact, ContactImpulse impulse) {
-//                System.out.println("postsolve");
-
-            }
-        });
+        }, 1, 2000);
     }
 
     private void init() {
-
-        new Rectangle(10, 10, 100, 10);
-        new Rectangle(10, 10, 100, 10);
-
         TextureRegion region = map.getTileSets().getTileSet(0).getTile(100).getTextureRegion();
         player = new Player(region, this);
         player.setPosition(60, 320);
         stage.addActor(player);
-        player.makeBody(world);
-
-
-        BodyDef bodyGroundDef = new BodyDef();
-        bodyGroundDef.type = BodyDef.BodyType.StaticBody;
-        bodyGroundDef.position.set(320, 240);
-        Body bodyGround = world.createBody(bodyGroundDef);
-
-        PolygonShape shapeGround = new PolygonShape();
-        shapeGround.setAsBox(300, 16);
-        bodyGround.createFixture(shapeGround, 1);
-        bodyGround.setUserData(new UserData.Builder().setName("wall").build());
 
         mapLayer = (TiledMapTileLayer) map.getLayers().get("wall");
 
@@ -149,25 +102,12 @@ public class MyGdxGame extends ApplicationAdapter {
             String name = object.getProperties().get("name", String.class);
 //            System.out.println(name);
             brickList.add(object);
-//            buildBody(object);
 
         }
 //        checkCollision(mapLayer);
 
     }
 
-    private void buildBody(MapObject object) {
-        Rectangle rectangle = CollisionUtils.getRectangle(object);
-        BodyDef bodyGroundDef = new BodyDef();
-        bodyGroundDef.type = BodyDef.BodyType.StaticBody;
-        bodyGroundDef.position.set(rectangle.x, rectangle.y);
-        Body bodyGround = world.createBody(bodyGroundDef);
-
-        PolygonShape shapeGround = new PolygonShape();
-        shapeGround.setAsBox(rectangle.width, rectangle.height);
-        bodyGround.createFixture(shapeGround, 1);
-        bodyGround.setUserData(object);
-    }
 
     /**
      * libgdx 会自动折算tiledmap 的坐标为左下角的
@@ -180,6 +120,28 @@ public class MyGdxGame extends ApplicationAdapter {
                     new Rectangle((int) (player.getX()), (int) (player.getY()), 16, 16));
             if (collision) {
                 System.out.println(brick.getName());
+            }
+        }
+        for (Bullet bullet : runningBullet) {
+            if (Bullet.ENMEY_BULLET.equals(bullet.getType())) {
+                // 敌人子弹
+                if (CollisionUtils.isCollision(bullet.getRectangle(), player.getRectangle())) {
+                    // 敌人子弹，子弹命中玩家
+                    bullet.setActive(false);
+                }
+
+            } else if (Bullet.PLAYER_BULLET.equals(bullet.getType())) {
+                // todo  玩家子弹 这里有敌人的检测，先保留
+
+            }
+            // 子弹打中墙面
+            for (MapObject brick : brickList) {
+                boolean collision = CollisionUtils.isCollision(
+                        CollisionUtils.getRectangle(brick),
+                        bullet.getRectangle());
+                if (collision) {
+                    // 子弹打中墙面
+                }
             }
         }
     }
@@ -227,9 +189,28 @@ public class MyGdxGame extends ApplicationAdapter {
 
         stage.act();
         stage.draw();
-        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
-//        checkCollision(mapLayer);
-        debugRenderer.render(world, camera.combined);
+        checkCollision(mapLayer);
+        checkDisposeBullet();
+        System.out.println(pool.getFree());
+    }
+
+    private void checkDisposeBullet() {
+        List<Bullet> list = new ArrayList<Bullet>();
+        for (Bullet bullet : runningBullet) {
+            boolean outSpace = bullet.getX() < 0 || bullet.getX() > 640 | bullet.getY() < 0 || bullet.getY() > 600;
+            if (outSpace) {
+                bullet.setActive(false);
+                bullet.remove();
+                list.add(bullet);
+                pool.free(bullet);
+            } else if (!bullet.isActive()) {
+                bullet.remove();
+                list.add(bullet);
+                pool.free(bullet);
+            }
+        }
+        runningBullet.removeAll(list);
+
     }
 
     @Override
@@ -237,6 +218,5 @@ public class MyGdxGame extends ApplicationAdapter {
         batch.dispose();
         img.dispose();
     }
-
 
 }
