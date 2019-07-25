@@ -71,6 +71,7 @@ public class MyGdxGame extends ApplicationAdapter {
         pool = new Pool<Bullet>(8) {
             @Override
             protected Bullet newObject() {
+                System.out.println("新建了一个对象");
                 return new Bullet(b);
             }
         };
@@ -215,7 +216,7 @@ public class MyGdxGame extends ApplicationAdapter {
         stage.draw();
         checkCollision(mapLayer);
         checkDisposeBullet();
-        System.out.println(pool.getFree());
+//        System.out.println(pool.getFree());
     }
 
     private void checkDisposeBullet() {
@@ -243,4 +244,16 @@ public class MyGdxGame extends ApplicationAdapter {
         img.dispose();
     }
 
+    @Override
+    public void pause() {
+        super.pause();
+        System.out.println("pause");
+
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        System.out.println("resume");
+    }
 }

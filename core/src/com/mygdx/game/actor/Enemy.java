@@ -1,6 +1,8 @@
 package com.mygdx.game.actor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -8,11 +10,12 @@ import com.mygdx.game.MyGdxGame;
 
 import java.util.*;
 
-public class Enemy extends TankActor {
+public class Enemy extends TankActor implements LifecycleListener {
     private TextureRegion region;
     private MyGdxGame game;
     Random random = new Random();
     List<Integer> directions = new ArrayList<>();
+    private boolean gamePause = false;
 
     public Enemy(TextureRegion region, MyGdxGame game) {
         super(region, game);
@@ -22,6 +25,7 @@ public class Enemy extends TankActor {
         directions.add(Input.Keys.S);
         directions.add(Input.Keys.A);
         directions.add(Input.Keys.D);
+        Gdx.app.addLifecycleListener(this);
     }
 
     @Override
@@ -90,6 +94,9 @@ public class Enemy extends TankActor {
 
 
     private void Ai() {
+        if (gamePause) {
+            return;
+        }
         Player player = game.getPlayer();
         if (getState() == TANKSTATE_MOVING) {
             int i = random.nextInt(90);
@@ -149,4 +156,20 @@ public class Enemy extends TankActor {
         }
         return false;
     }
+
+    @Override
+    public void pause() {
+        gamePause = true;
+    }
+
+    @Override
+    public void resume() {
+        gamePause = false;
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
 }
