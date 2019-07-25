@@ -1,21 +1,23 @@
 package com.mygdx.game.actor;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.MyGdxGame;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
-public class Enemy extends TankActor implements LifecycleListener {
+public class Enemy extends TankActor {
     private TextureRegion region;
     private MyGdxGame game;
     Random random = new Random();
     List<Integer> directions = new ArrayList<>();
     private boolean gamePause = false;
+    private Timer timer = new Timer();
 
     public Enemy(TextureRegion region, MyGdxGame game) {
         super(region, game);
@@ -25,7 +27,6 @@ public class Enemy extends TankActor implements LifecycleListener {
         directions.add(Input.Keys.S);
         directions.add(Input.Keys.A);
         directions.add(Input.Keys.D);
-        Gdx.app.addLifecycleListener(this);
     }
 
     @Override
@@ -72,13 +73,13 @@ public class Enemy extends TankActor implements LifecycleListener {
     }
 
     public void startAttack() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.scheduleTask(new Timer.Task() {
             @Override
             public void run() {
                 Ai();
             }
-        }, 200, 1000);
+        }, 2, 2);
+
     }
 
     private void pressKey(int keycode) {
@@ -95,7 +96,7 @@ public class Enemy extends TankActor implements LifecycleListener {
 
     private void Ai() {
         if (gamePause) {
-            return;
+//            return;
         }
         Player player = game.getPlayer();
         if (getState() == TANKSTATE_MOVING) {
@@ -157,19 +158,10 @@ public class Enemy extends TankActor implements LifecycleListener {
         return false;
     }
 
-    @Override
-    public void pause() {
-        gamePause = true;
-    }
 
     @Override
-    public void resume() {
-        gamePause = false;
+    public void die() {
+        timer.clear();
+        this.remove();
     }
-
-    @Override
-    public void dispose() {
-
-    }
-
 }

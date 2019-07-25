@@ -3,7 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,8 +24,6 @@ import com.mygdx.game.actor.Player;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MyGdxGame extends ApplicationAdapter {
     SpriteBatch batch;
@@ -41,6 +38,7 @@ public class MyGdxGame extends ApplicationAdapter {
     TiledMapTileLayer mapLayer;
     public Pool<Bullet> pool;
     public List<Bullet> runningBullet = new ArrayList<Bullet>();
+    private List<Enemy> enemyList = new ArrayList<>();
 
     @Override
     public void create() {
@@ -89,12 +87,12 @@ public class MyGdxGame extends ApplicationAdapter {
         enemy.setPosition(100, 320);
         stage.addActor(enemy);
         enemy.startAttack();
+        enemyList.add(enemy);
         mapLayer = (TiledMapTileLayer) map.getLayers().get("wall");
 
         MapObjects objects = map.getLayers().get("iron").getObjects();
         for (MapObject object : objects) {
             String name = object.getProperties().get("name", String.class);
-//            System.out.println(name);
             brickList.add(object);
 
         }
@@ -126,12 +124,28 @@ public class MyGdxGame extends ApplicationAdapter {
                 if (CollisionUtils.isCollision(bullet.getRectangle(), player.getRectangle())) {
                     // 敌人子弹，子弹命中玩家
                     bullet.setActive(false);
-                    break;
+                    // 命中玩家
+                    continue;
                 }
 
             } else if (Bullet.PLAYER_BULLET.equals(bullet.getType())) {
                 // todo  玩家子弹 这里有敌人的检测，先保留
-
+                List<Enemy> dieEnemy = new ArrayList<>();
+                // 子弹和敌人全部检测
+                for (Enemy enemy : enemyList) {
+                    if (CollisionUtils.isCollision(bullet.getRectangle(), enemy.getRectangle())) {
+                        enemy.hitted(bullet);
+                        if (enemy.isDie()) {
+                            dieEnemy.add(enemy);
+                        }
+                        bullet.setActive(false);
+                        // 这里子弹检测一次就跳出
+                        break;
+                    }
+                }
+                if (!dieEnemy.isEmpty()) {
+                    enemyList.removeAll(dieEnemy);
+                }
             }
             // 子弹打中墙面
             List<MapObject> hitted = new ArrayList<MapObject>();
@@ -155,12 +169,12 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private void bulletHitWall(Bullet bullet, MapObject brick) {
         String type = brick.getProperties().get("type", String.class);
-        if (bullet.getStrength() == Bullet.BULLET_LEVEL1) {
+        if (bullet.getDamage() == Bullet.BULLET_LEVEL1) {
             // 普通子弹
             if ("clay".equals(type)) {
                 // 销毁对应砖块
             }
-        } else if (bullet.getStrength() == Bullet.BULLET_LEVEL2) {
+        } else if (bullet.getDamage() == Bullet.BULLET_LEVEL2) {
             // 强力子弹，销毁对应砖块
 
         }
@@ -216,7 +230,7 @@ public class MyGdxGame extends ApplicationAdapter {
         stage.draw();
         checkCollision(mapLayer);
         checkDisposeBullet();
-//        System.out.println(pool.getFree());
+        System.out.println(pool.getFree());
     }
 
     private void checkDisposeBullet() {

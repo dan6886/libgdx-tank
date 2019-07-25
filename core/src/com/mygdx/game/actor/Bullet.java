@@ -1,11 +1,8 @@
 package com.mygdx.game.actor;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.physics.box2d.World;
 
 import java.awt.*;
 
@@ -18,7 +15,7 @@ public class Bullet extends BaseActor {
     public static final String PLAYER_BULLET = "player_bullet";
     public static final int BULLET_LEVEL1 = 1;
     public static final int BULLET_LEVEL2 = 2;
-    private int strength = 1;
+    private int damage = 10;
 
     public Bullet(TextureRegion region) {
         setSize(region.getRegionWidth(), region.getRegionHeight());
@@ -45,12 +42,12 @@ public class Bullet extends BaseActor {
         setPosition(x - getWidth() / 2, y - getHeight() / 2);
     }
 
-    public int getStrength() {
-        return strength;
+    public int getDamage() {
+        return damage;
     }
 
-    public void setStrength(int strength) {
-        this.strength = strength;
+    public void setDamage(int strength) {
+        this.damage = strength;
     }
 
     @Override

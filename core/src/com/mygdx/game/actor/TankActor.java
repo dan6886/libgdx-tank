@@ -14,6 +14,7 @@ public class TankActor extends BaseActor {
     private int direction = Input.Keys.W;
     private int firePosition = 10;
     private MyGdxGame game;
+    private int life = 10;
     /**
      * 0 stop;1 moving
      */
@@ -41,6 +42,22 @@ public class TankActor extends BaseActor {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public void hitted(Bullet bullet) {
+        int damage = bullet.getDamage();
+        this.life = this.life - damage;
+        if (this.life <= 0) {
+            die();
+        }
+    }
+
+    public boolean isDie() {
+        return this.life <= 0;
+    }
+
+    public void die() {
+
     }
 
     public void lookAt(int direction) {
