@@ -10,8 +10,11 @@ public class Bullet extends BaseActor {
     private TextureRegion region;
     private int direction;
     private boolean isActive = false;
-    public static final String ENMEY_BULLET = "enemy_bullet";
+    public static final String ENEMY_BULLET = "enemy_bullet";
     public static final String PLAYER_BULLET = "player_bullet";
+    public static final int BULLET_LEVEL1 = 1;
+    public static final int BULLET_LEVEL2 = 2;
+    private int strength = 1;
 
     public Bullet(TextureRegion region) {
         setSize(region.getRegionWidth(), region.getRegionHeight());
@@ -36,6 +39,14 @@ public class Bullet extends BaseActor {
 
     public void setCenterInPosition(float x, float y) {
         setPosition(x - getWidth() / 2, y - getHeight() / 2);
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public void setStrength(int strength) {
+        this.strength = strength;
     }
 
     @Override

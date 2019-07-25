@@ -69,7 +69,6 @@ public class MyGdxGame extends ApplicationAdapter {
         pool = new Pool<Bullet>(8) {
             @Override
             protected Bullet newObject() {
-                TextureRegion region = map.getTileSets().getTileSet(0).getTile(114).getTextureRegion();
                 return new Bullet(b);
             }
         };
@@ -82,7 +81,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 bullet.setPosition(50, 50);
                 bullet.setActive(true);
                 bullet.setDirection(Input.Keys.W);
-                bullet.setType(Bullet.ENMEY_BULLET);
+                bullet.setType(Bullet.ENEMY_BULLET);
                 stage.addActor(bullet);
                 runningBullet.add(bullet);
             }
@@ -104,6 +103,7 @@ public class MyGdxGame extends ApplicationAdapter {
             brickList.add(object);
 
         }
+        TiledMapUtils.removeTiled(map, "wall", brickList.get(0));
 //        checkCollision(mapLayer);
 
     }
@@ -123,11 +123,12 @@ public class MyGdxGame extends ApplicationAdapter {
             }
         }
         for (Bullet bullet : runningBullet) {
-            if (Bullet.ENMEY_BULLET.equals(bullet.getType())) {
+            if (Bullet.ENEMY_BULLET.equals(bullet.getType())) {
                 // 敌人子弹
                 if (CollisionUtils.isCollision(bullet.getRectangle(), player.getRectangle())) {
                     // 敌人子弹，子弹命中玩家
                     bullet.setActive(false);
+                    break;
                 }
 
             } else if (Bullet.PLAYER_BULLET.equals(bullet.getType())) {
@@ -135,14 +136,35 @@ public class MyGdxGame extends ApplicationAdapter {
 
             }
             // 子弹打中墙面
+            List<MapObject> hitted = new ArrayList<MapObject>();
             for (MapObject brick : brickList) {
                 boolean collision = CollisionUtils.isCollision(
                         CollisionUtils.getRectangle(brick),
                         bullet.getRectangle());
                 if (collision) {
-                    // 子弹打中墙面
+                    // 子弹打中墙面，这里要根据子弹类型来判断墙体是否消失
+                    hitted.add(brick);
+                    TiledMapUtils.removeTiled(map, "wall", brick);
                 }
             }
+            if (!hitted.isEmpty()) {
+                // 确实击中了砖块
+                bullet.setActive(false);
+                brickList.removeAll(hitted);
+            }
+        }
+    }
+
+    private void bulletHitWall(Bullet bullet, MapObject brick) {
+        String type = brick.getProperties().get("type", String.class);
+        if (bullet.getStrength() == Bullet.BULLET_LEVEL1) {
+            // 普通子弹
+            if ("clay".equals(type)) {
+                // 销毁对应砖块
+            }
+        } else if (bullet.getStrength() == Bullet.BULLET_LEVEL2) {
+            // 强力子弹，销毁对应砖块
+
         }
     }
 
@@ -184,8 +206,8 @@ public class MyGdxGame extends ApplicationAdapter {
 //		batch.draw(img, 150, 0);
 //		batch.end();
 //        System.out.println("render");
-//        renderer.setView(camera);
-//        renderer.render();
+        renderer.setView(camera);
+        renderer.render();
 
         stage.act();
         stage.draw();

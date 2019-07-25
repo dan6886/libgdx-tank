@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MyGdxGame;
 
@@ -29,6 +30,7 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
         this.game = game;
         Gdx.input.setInputProcessor(this);
         setType("Player");
+        setOrigin(getWidth()/2,getHeight()/2);
     }
 
     @Override
@@ -38,19 +40,32 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
         boolean isPressedDown = Gdx.input.isKeyPressed(Input.Keys.S);
         boolean isPressedLeft = Gdx.input.isKeyPressed(Input.Keys.A);
         boolean isPressedRight = Gdx.input.isKeyPressed(Input.Keys.D);
-        if (isPressedUp && game.isCanMove(this, Input.Keys.W)) {
-            setY(getY() + speed);
+        if (isPressedUp) {
+            if (game.isCanMove(this, Input.Keys.W)) {
+                setY(getY() + speed);
+            }
+            setRotation(0);
             direction = Input.Keys.W;
-        } else if (isPressedDown && game.isCanMove(this, Input.Keys.S)) {
-            setY(getY() - speed);
+        } else if (isPressedDown) {
+            if (game.isCanMove(this, Input.Keys.S)) {
+                setY(getY() - speed);
+            }
+            setRotation(180);
             direction = Input.Keys.S;
-        } else if (isPressedLeft && game.isCanMove(this, Input.Keys.A)) {
-            setX(getX() - speed);
+        } else if (isPressedLeft) {
+            if (game.isCanMove(this, Input.Keys.A)) {
+                setX(getX() - speed);
+            }
+            setRotation(90);
             direction = Input.Keys.A;
-        } else if (isPressedRight && game.isCanMove(this, Input.Keys.D)) {
-            setX(getX() + speed);
+        } else if (isPressedRight) {
+            if (game.isCanMove(this, Input.Keys.D)) {
+                setX(getX() + speed);
+            }
+            setRotation(270);
             direction = Input.Keys.D;
         }
+
     }
 
     @Override
@@ -59,8 +74,12 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
         if (null == region || !isVisible()) {
             return;
         }
-        batch.draw(region, getX(), getY());
 
+        batch.draw(region, getX(), getY(),
+                getOriginX(), getOriginY(),
+                getWidth(), getHeight(),
+                getScaleX(), getScaleY(),
+                getRotation());
     }
 
     @Override
@@ -78,7 +97,7 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
         bullet.setCenterInPosition(headPosition.x, headPosition.y);
         bullet.setActive(true);
         bullet.setDirection(direction);
-        bullet.setType(Bullet.ENMEY_BULLET);
+        bullet.setType(Bullet.ENEMY_BULLET);
         this.getStage().addActor(bullet);
         game.runningBullet.add(bullet);
     }
