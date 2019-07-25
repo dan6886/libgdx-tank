@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Pool;
 import com.mygdx.game.actor.Bullet;
+import com.mygdx.game.actor.Enemy;
 import com.mygdx.game.actor.Player;
 
 import java.awt.*;
@@ -73,19 +75,6 @@ public class MyGdxGame extends ApplicationAdapter {
             }
         };
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Bullet bullet = pool.obtain();
-                bullet.setPosition(50, 50);
-                bullet.setActive(true);
-                bullet.setDirection(Input.Keys.W);
-                bullet.setType(Bullet.ENEMY_BULLET);
-                stage.addActor(bullet);
-                runningBullet.add(bullet);
-            }
-        }, 1, 2000);
     }
 
     private void init() {
@@ -94,6 +83,11 @@ public class MyGdxGame extends ApplicationAdapter {
         player.setPosition(60, 320);
         stage.addActor(player);
 
+        TextureRegion region2 = map.getTileSets().getTileSet(0).getTile(108).getTextureRegion();
+        Enemy enemy = new Enemy(region2, this);
+        enemy.setPosition(100, 320);
+        stage.addActor(enemy);
+        enemy.startAttack();
         mapLayer = (TiledMapTileLayer) map.getLayers().get("wall");
 
         MapObjects objects = map.getLayers().get("iron").getObjects();
@@ -108,6 +102,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
     }
 
+    public Player getPlayer() {
+        return player;
+    }
 
     /**
      * libgdx 会自动折算tiledmap 的坐标为左下角的
@@ -184,6 +181,11 @@ public class MyGdxGame extends ApplicationAdapter {
             case Input.Keys.D:
                 rectangle.translate(2, 0);
                 break;
+        }
+
+
+        if (rectangle.x < 0 || rectangle.y < 0 || rectangle.x + rectangle.width > 640 || rectangle.y + rectangle.height > 480) {
+            return false;
         }
         for (MapObject brick : brickList) {
             boolean collision = CollisionUtils.isCollision(

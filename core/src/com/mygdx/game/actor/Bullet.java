@@ -1,12 +1,16 @@
 package com.mygdx.game.actor;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.awt.*;
+
 public class Bullet extends BaseActor {
-    private int speed = 1;
+    private int speed = 2;
     private TextureRegion region;
     private int direction;
     private boolean isActive = false;
@@ -81,7 +85,20 @@ public class Bullet extends BaseActor {
     }
 
     @Override
-    public void makeBody(World world) {
-
+    public Rectangle getRectangle() {
+        final int changetTo = 18;
+        int extend = (int) (changetTo - getWidth()) / 2;
+        Rectangle rectangle = new Rectangle((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());
+        switch (direction) {
+            case Input.Keys.W:
+            case Input.Keys.S:
+                rectangle.setBounds(rectangle.x - extend, rectangle.y, changetTo, rectangle.height);
+                break;
+            case Input.Keys.A:
+            case Input.Keys.D:
+                rectangle.setBounds(rectangle.x, rectangle.y - extend, rectangle.width, changetTo);
+                break;
+        }
+        return rectangle;
     }
 }

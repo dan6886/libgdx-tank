@@ -5,32 +5,26 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MyGdxGame;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player extends BaseActor implements Disposable, InputProcessor {
+public class Player extends TankActor implements Disposable, InputProcessor {
 
     private TextureRegion region;
-    private int speed = 1;
-    private int direction = Input.Keys.W;
+
     List<Integer> noPassDirection = new ArrayList<Integer>();
     private MyGdxGame game;
     private int firePosition = 10;
 
     public Player(TextureRegion region, MyGdxGame game) {
-        super();
-        setSize(region.getRegionWidth(), region.getRegionHeight());
+        super(region, game);
         this.region = region;
         this.game = game;
         Gdx.input.setInputProcessor(this);
         setType("Player");
-        setOrigin(getWidth()/2,getHeight()/2);
     }
 
     @Override
@@ -40,30 +34,38 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
         boolean isPressedDown = Gdx.input.isKeyPressed(Input.Keys.S);
         boolean isPressedLeft = Gdx.input.isKeyPressed(Input.Keys.A);
         boolean isPressedRight = Gdx.input.isKeyPressed(Input.Keys.D);
+        boolean isMoveing = false;
         if (isPressedUp) {
             if (game.isCanMove(this, Input.Keys.W)) {
-                setY(getY() + speed);
+                setY(getY() + getSpeed());
+                setState(TANKSTATE_MOVING);
+                isMoveing = true;
             }
-            setRotation(0);
-            direction = Input.Keys.W;
+            lookAt(Input.Keys.W);
         } else if (isPressedDown) {
             if (game.isCanMove(this, Input.Keys.S)) {
-                setY(getY() - speed);
+                setY(getY() - getSpeed());
+                setState(TANKSTATE_MOVING);
+                isMoveing = true;
             }
-            setRotation(180);
-            direction = Input.Keys.S;
+            lookAt(Input.Keys.S);
         } else if (isPressedLeft) {
             if (game.isCanMove(this, Input.Keys.A)) {
-                setX(getX() - speed);
+                setX(getX() - getSpeed());
+                setState(TANKSTATE_MOVING);
+                isMoveing = true;
             }
-            setRotation(90);
-            direction = Input.Keys.A;
+            lookAt(Input.Keys.A);
         } else if (isPressedRight) {
             if (game.isCanMove(this, Input.Keys.D)) {
-                setX(getX() + speed);
+                setX(getX() + getSpeed());
+                setState(TANKSTATE_MOVING);
+                isMoveing = true;
             }
-            setRotation(270);
-            direction = Input.Keys.D;
+            lookAt(Input.Keys.D);
+        }
+        if (!isMoveing) {
+            setState(TANKSTATE_STOP);
         }
 
     }
@@ -71,15 +73,6 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        if (null == region || !isVisible()) {
-            return;
-        }
-
-        batch.draw(region, getX(), getY(),
-                getOriginX(), getOriginY(),
-                getWidth(), getHeight(),
-                getScaleX(), getScaleY(),
-                getRotation());
     }
 
     @Override
@@ -87,49 +80,12 @@ public class Player extends BaseActor implements Disposable, InputProcessor {
 
     }
 
-    @Override
-    public void makeBody(World world) {
-    }
-
-    public void fire() {
-        Bullet bullet = game.pool.obtain();
-        Vector2 headPosition = getHeadPosition();
-        bullet.setCenterInPosition(headPosition.x, headPosition.y);
-        bullet.setActive(true);
-        bullet.setDirection(direction);
-        bullet.setType(Bullet.ENEMY_BULLET);
-        this.getStage().addActor(bullet);
-        game.runningBullet.add(bullet);
-    }
-
-    private Vector2 getHeadPosition() {
-        Vector2 v = new Vector2();
-        switch (direction) {
-            case Input.Keys.W:
-                v.x = getX() + getWidth() / 2;
-                v.y = getY() + getHeight() + firePosition;
-                break;
-            case Input.Keys.S:
-                v.x = getX() + getWidth() / 2;
-                v.y = getY() + -firePosition;
-                break;
-            case Input.Keys.A:
-                v.x = getX() - firePosition;
-                v.y = getY() + getHeight() / 2;
-                break;
-            case Input.Keys.D:
-                v.x = getX() + getWidth() + firePosition;
-                v.y = getY() + getHeight() / 2;
-                break;
-        }
-        return v;
-    }
 
     @Override
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Input.Keys.SPACE:
-                fire();
+                fireBullet();
                 break;
         }
         return true;

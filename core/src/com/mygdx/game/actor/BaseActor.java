@@ -9,7 +9,6 @@ public abstract class BaseActor extends Actor {
 
     private String type = "";
 
-    public abstract void makeBody(World world);
 
     public String getType() {
         return type;
