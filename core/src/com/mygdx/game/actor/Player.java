@@ -25,6 +25,7 @@ public class Player extends TankActor implements Disposable, InputProcessor {
         this.game = game;
         Gdx.input.setInputProcessor(this);
         setType("Player");
+        setBulletActiveCount(2);
     }
 
     @Override

@@ -13,9 +13,10 @@ public class Bullet extends BaseActor {
     private boolean isActive = false;
     public static final String ENEMY_BULLET = "enemy_bullet";
     public static final String PLAYER_BULLET = "player_bullet";
-    public static final int BULLET_LEVEL1 = 1;
-    public static final int BULLET_LEVEL2 = 2;
+    public static final int BULLET_LEVEL1 = 10;
+    public static final int BULLET_LEVEL2 = 20;
     private int damage = 10;
+    private TankActor tankActor;
 
     public Bullet(TextureRegion region) {
         setSize(region.getRegionWidth(), region.getRegionHeight());
@@ -34,6 +35,13 @@ public class Bullet extends BaseActor {
         return isActive;
     }
 
+    public void recycle() {
+        if (isActive()) {
+            setActive(false);
+            getTankActor().increaseBulletActiveCount();
+        }
+    }
+
     public void setActive(boolean active) {
         isActive = active;
     }
@@ -48,6 +56,14 @@ public class Bullet extends BaseActor {
 
     public void setDamage(int strength) {
         this.damage = strength;
+    }
+
+    public TankActor getTankActor() {
+        return tankActor;
+    }
+
+    public void setTankActor(TankActor tankActor) {
+        this.tankActor = tankActor;
     }
 
     @Override

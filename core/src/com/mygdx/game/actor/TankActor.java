@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.MyGdxGame;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class TankActor extends BaseActor {
     public static final int TANKSTATE_STOP = 0;
     public static final int TANKSTATE_MOVING = 1;
@@ -19,6 +22,7 @@ public class TankActor extends BaseActor {
      * 0 stop;1 moving
      */
     private int state = 0;
+    private int bulletActiveCount = 1;
 
     public int getSpeed() {
         return speed;
@@ -50,6 +54,22 @@ public class TankActor extends BaseActor {
         if (this.life <= 0) {
             die();
         }
+    }
+
+    public int getBulletActiveCount() {
+        return bulletActiveCount;
+    }
+
+    public void setBulletActiveCount(int bulletActiveCount) {
+        this.bulletActiveCount = bulletActiveCount;
+    }
+
+    public void increaseBulletActiveCount() {
+        this.bulletActiveCount++;
+    }
+
+    public void decreaseBulletActiveCount() {
+        this.bulletActiveCount--;
     }
 
     public boolean isDie() {
@@ -128,13 +148,18 @@ public class TankActor extends BaseActor {
     }
 
     public void fireBullet() {
+        if (getBulletActiveCount() < 1) {
+            return;
+        }
         Bullet bullet = game.pool.obtain();
         Vector2 headPosition = getHeadPosition();
         bullet.setCenterInPosition(headPosition.x, headPosition.y);
         bullet.setActive(true);
         bullet.setDirection(getDirection());
         bullet.setType(getBulletType());
+        bullet.setTankActor(this);
         getStage().addActor(bullet);
+        decreaseBulletActiveCount();
         game.runningBullet.add(bullet);
     }
 

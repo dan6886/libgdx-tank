@@ -27,6 +27,7 @@ public class Enemy extends TankActor {
         directions.add(Input.Keys.S);
         directions.add(Input.Keys.A);
         directions.add(Input.Keys.D);
+        setBulletActiveCount(1);
     }
 
     @Override
@@ -73,12 +74,13 @@ public class Enemy extends TankActor {
     }
 
     public void startAttack() {
+        int i = random.nextInt(3);
         timer.scheduleTask(new Timer.Task() {
             @Override
             public void run() {
                 Ai();
             }
-        }, 2, 2);
+        }, 2, 2 + i);
 
     }
 
@@ -157,7 +159,6 @@ public class Enemy extends TankActor {
         }
         return false;
     }
-
 
     @Override
     public void die() {
