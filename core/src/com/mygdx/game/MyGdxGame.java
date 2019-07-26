@@ -14,15 +14,18 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.actor.Bullet;
 import com.mygdx.game.actor.Enemy;
 import com.mygdx.game.actor.Player;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +43,9 @@ public class MyGdxGame extends ApplicationAdapter {
     public Pool<Bullet> pool;
     public List<Bullet> runningBullet = new ArrayList<Bullet>();
     private List<Enemy> enemyList = new ArrayList<>();
-
+    private Viewport viewport;
     @Override
     public void create() {
-        stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
 
         batch = new SpriteBatch();
         img = new Texture("tank_atlas.png");
@@ -54,7 +55,7 @@ public class MyGdxGame extends ApplicationAdapter {
         int height = Gdx.graphics.getHeight();
 //        int height = 160;
 
-        camera = new OrthographicCamera(width, height);
+        camera = new OrthographicCamera();
 //        camera.setToOrtho(true);
 //        camera.setToOrtho(true, 160, 160 * (height * 1.0f / width));
         camera.position.set(width / 2, height / 2, 0);
@@ -64,7 +65,10 @@ public class MyGdxGame extends ApplicationAdapter {
         map = loader.load("110.tmx");
 
 
+        viewport = new FitViewport(640, 480, camera);
         renderer = new OrthogonalTiledMapRenderer(map);
+        stage = new Stage(viewport);
+        Gdx.input.setInputProcessor(stage);
 
         init();
         pool = new Pool<Bullet>(8) {
@@ -78,9 +82,9 @@ public class MyGdxGame extends ApplicationAdapter {
         timer.scheduleTask(new Timer.Task() {
             @Override
             public void run() {
-//                spwanEnemy();
+                spwanEnemy();
             }
-        }, 2, 2);
+        }, 2, 2,1);
     }
 
     private void init() {
@@ -205,16 +209,19 @@ public class MyGdxGame extends ApplicationAdapter {
 
         switch (direction) {
             case Input.Keys.W:
-                rectangle.translate(0, 2);
+                rectangle.merge(rectangle.x, rectangle.y + rectangle.height + 2);
                 break;
             case Input.Keys.S:
-                rectangle.translate(0, -2);
+                rectangle.merge(rectangle.x, rectangle.y - 2);
+//                rectangle.translate(0, -2);
                 break;
             case Input.Keys.A:
-                rectangle.translate(-2, 0);
+                rectangle.merge(rectangle.x - 2, rectangle.y);
+//                rectangle.translate(-2, 0);
                 break;
             case Input.Keys.D:
-                rectangle.translate(2, 0);
+                rectangle.merge(rectangle.x + rectangle.width + 2, rectangle.y);
+//                rectangle.translate(2, 0);
                 break;
         }
 
@@ -244,7 +251,7 @@ public class MyGdxGame extends ApplicationAdapter {
 //		batch.draw(img, 150, 0);
 //		batch.end();
 //        System.out.println("render");
-        renderer.setView(camera);
+        renderer.setView((OrthographicCamera)stage.getCamera());
         renderer.render();
 
         stage.act();

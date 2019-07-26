@@ -199,7 +199,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="clay" visible="0">
+ <objectgroup name="clay">
   <properties>
    <property name="type" value="clay"/>
   </properties>
