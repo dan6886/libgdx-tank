@@ -17,7 +17,7 @@ public class TankActor extends BaseActor {
     private int direction = Input.Keys.W;
     private int firePosition = 10;
     private MyGdxGame game;
-    private int life = 10;
+    private int life = 50;
     /**
      * 0 stop;1 moving
      */
@@ -171,5 +171,9 @@ public class TankActor extends BaseActor {
                 return Bullet.ENEMY_BULLET;
         }
         return "";
+    }
+
+    public void onHit() {
+        // 给到礼物
     }
 }

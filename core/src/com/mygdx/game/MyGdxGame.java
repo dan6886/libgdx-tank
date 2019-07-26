@@ -27,6 +27,7 @@ import com.mygdx.game.actor.Enemy;
 import com.mygdx.game.actor.Player;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MyGdxGame extends ApplicationAdapter {
@@ -44,6 +45,8 @@ public class MyGdxGame extends ApplicationAdapter {
     public List<Bullet> runningBullet = new ArrayList<Bullet>();
     private List<Enemy> enemyList = new ArrayList<>();
     private Viewport viewport;
+    private MapObject base;
+
     @Override
     public void create() {
 
@@ -84,7 +87,7 @@ public class MyGdxGame extends ApplicationAdapter {
             public void run() {
                 spwanEnemy();
             }
-        }, 2, 2,1);
+        }, 2, 2);
     }
 
     private void init() {
@@ -97,15 +100,16 @@ public class MyGdxGame extends ApplicationAdapter {
 
         MapObjects iron_objects = map.getLayers().get("iron").getObjects();
         for (MapObject object : iron_objects) {
-            String name = object.getProperties().get("name", String.class);
             brickList.add(object);
         }
         MapObjects clay_objects = map.getLayers().get("clay").getObjects();
         for (MapObject object : clay_objects) {
-            String name = object.getProperties().get("name", String.class);
             brickList.add(object);
         }
-
+        MapObjects base_objects = map.getLayers().get("base").getObjects();
+        for (MapObject object : base_objects) {
+            base = object;
+        }
         TiledMapUtils.removeTiled(map, "wall", brickList.get(0));
 
     }
@@ -150,58 +154,71 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
             } else if (Bullet.PLAYER_BULLET.equals(bullet.getType())) {
                 // todo  玩家子弹 这里有敌人的检测，先保留
-                List<Enemy> dieEnemy = new ArrayList<>();
-                // 子弹和敌人全部检测
-                for (Enemy enemy : enemyList) {
+                boolean isHitEnemy = false;
+                Iterator<Enemy> iterator = enemyList.iterator();
+                while (iterator.hasNext()) {
+                    Enemy enemy = iterator.next();
                     if (CollisionUtils.isCollision(bullet.getRectangle(), enemy.getRectangle())) {
                         enemy.hitted(bullet);
                         if (enemy.isDie()) {
-                            dieEnemy.add(enemy);
+                            iterator.remove();
                         }
                         bullet.recycle();
+                        isHitEnemy = true;
                         // 这里子弹检测一次就跳出
                         break;
                     }
                 }
-                if (!dieEnemy.isEmpty()) {
-                    enemyList.removeAll(dieEnemy);
-                    // 这里子弹打到敌人只跳出这个子弹的循环
+
+                if (isHitEnemy) {
                     continue;
                 }
+
             }
 
             // 子弹打中墙面
-            List<MapObject> destory = new ArrayList<MapObject>();
-            for (MapObject brick : brickList) {
+            Iterator<MapObject> iterator = brickList.iterator();
+            while (iterator.hasNext()) {
+                MapObject brick = iterator.next();
                 boolean collision = CollisionUtils.isCollision(
                         CollisionUtils.getRectangle(brick),
                         bullet.getRectangle());
                 if (collision) {
                     // 子弹打中墙面，这里要根据子弹类型来判断墙体是否消失
-                    bulletHitWall(bullet, brick, destory);
+                    if (bulletHitWall(bullet, brick)) {
+                        iterator.remove();
+                    }
                     bullet.recycle();
                 }
+
             }
-            if (!destory.isEmpty()) {
-                brickList.removeAll(destory);
+
+            // 基地
+            boolean collision = CollisionUtils.isCollision(bullet.getRectangle(), CollisionUtils.getRectangle(base));
+            if (collision) {
+                bullet.recycle();
+                System.out.println("基地被攻击了");
             }
+
         }
     }
 
-    private void bulletHitWall(Bullet bullet, MapObject brick, List<MapObject> destroy) {
+    private boolean bulletHitWall(Bullet bullet, MapObject brick) {
+        boolean isDestoryWall = false;
         String type = brick.getProperties().get("type", String.class);
         if (bullet.getDamage() == Bullet.BULLET_LEVEL1) {
             // 普通子弹
             if ("clay".equals(type)) {
                 // 销毁对应砖块
                 TiledMapUtils.removeTiled(map, "wall", brick);
-                destroy.add(brick);
+                isDestoryWall = true;
             }
         } else if (bullet.getDamage() == Bullet.BULLET_LEVEL2) {
             // 强力子弹，销毁对应砖块
             TiledMapUtils.removeTiled(map, "wall", brick);
-            destroy.add(brick);
+            isDestoryWall = true;
         }
+        return isDestoryWall;
     }
 
     public boolean isCanMove(Actor actor, int direction) {
@@ -251,7 +268,7 @@ public class MyGdxGame extends ApplicationAdapter {
 //		batch.draw(img, 150, 0);
 //		batch.end();
 //        System.out.println("render");
-        renderer.setView((OrthographicCamera)stage.getCamera());
+        renderer.setView((OrthographicCamera) stage.getCamera());
         renderer.render();
 
         stage.act();

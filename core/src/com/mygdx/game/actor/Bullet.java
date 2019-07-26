@@ -15,7 +15,7 @@ public class Bullet extends BaseActor {
     public static final String PLAYER_BULLET = "player_bullet";
     public static final int BULLET_LEVEL1 = 10;
     public static final int BULLET_LEVEL2 = 20;
-    private int damage = 10;
+    private int damage = BULLET_LEVEL2;
     private TankActor tankActor;
 
     public Bullet(TextureRegion region) {

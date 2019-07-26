@@ -18,6 +18,13 @@ public class Enemy extends TankActor {
     List<Integer> directions = new ArrayList<>();
     private boolean gamePause = false;
     private Timer timer = new Timer();
+    public static final int ENEMY_TYPE1 = 10;
+    public static final int ENEMY_TYPE2 = 11;
+    public static final int ENEMY_TYPE3 = 12;
+    /**
+     * 特殊敌人可以产生礼物
+     */
+    private boolean isBonus = false;
 
     public Enemy(TextureRegion region, MyGdxGame game) {
         super(region, game);
@@ -71,6 +78,14 @@ public class Enemy extends TankActor {
         if (!isMoveing) {
             setState(TANKSTATE_STOP);
         }
+    }
+
+    public boolean isBonus() {
+        return isBonus;
+    }
+
+    public void setBonus(boolean bonus) {
+        isBonus = bonus;
     }
 
     public void startAttack() {
