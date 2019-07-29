@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextobjectid="160">
+<map version="1.0" tiledversion="1.1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextobjectid="223">
  <tileset firstgid="1" source="tank_atlas.xml"/>
- <layer name="wall" width="20" height="20">
+ <layer name="wall" width="20" height="20" visible="0">
   <data encoding="base64">
-   QwAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEQAAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAEMAAABEAAAAQwAAAEQAAABDAAAAQwAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAUwAAAFQAAABTAAAAVAAAAFMAAABTAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABEAAAAAAAAAEQAAABTAAAAVAAAAAAAAAAAAAAAAAAAAAAAAABTAAAAUwAAAFMAAABTAAAAUwAAAFMAAABTAAAAUwAAAFMAAABTAAAAUwAAAFQAAAAAAAAAVAAAAFMAAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTAAAAUwAAAFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFMAAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAAAAAAAAUwAAAFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAAAAAAAAAAAAAAAAAAAAAABTAAAAVAAAAAAAAABTAAAAVAAAAAAAAAAAAAAAYwAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAAAAAAAAAAAAAAAAAAAAAAFMAAABUAAAAAAAAAFQAAABEAAAAAAAAAAAAAABzAAAAdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEMAAABEAAAAAAAAAAAAAAAAAAAAUwAAAFQAAAAAAAAAVAAAAEQAAAAAAAAAAAAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTAAAAQwAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUAAAAVAAAAAAAAAAAAAAAcwAAAHQAAABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFMAAABUAAAAAAAAAAAAAABjAAAAZAAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFMAAABDAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUwAAAFQAAAAAAAAAAAAAAHMAAAB0AAAAYwAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTAAAAVAAAAAAAAAAAAAAAAAAAAHMAAABzAAAAdAAAAGMAAABkAAAAAAAAAAAAAAAAAAAAUwAAAEMAAABDAAAARAAAAAAAAAAAAAAAAAAAAFMAAABUAAAAAAAAAAAAAAAAAAAAAAAAAHMAAABzAAAAcwAAAHQAAABkAAAAAAAAAAAAAAAAAAAAUwAAAEMAAABDAAAARAAAAAAAAAAAAAAAUwAAAFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGMAAABkAAAASwAAAEwAAABjAAAAZAAAAAAAAAAAAAAAUwAAAFMAAABUAAAAAAAAAAAAAABTAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcwAAAHQAAABbAAAAXAAAAHMAAAB0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+   QwAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABTAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAEQAAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAARAAAAEMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABEAAAAUwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAEQAAABTAAAAAAAAAAAAAAAAAAAAYwAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAVAAAAFMAAAAAAAAAAAAAAAAAAABjAAAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYwAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABTAAAAUwAAAAAAAAAAAAAAAAAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABjAAAAZAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAFMAAABUAAAAAAAAAAAAAAAAAAAAYwAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAUwAAAFQAAAAAAAAAAAAAAAAAAABjAAAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYwAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABTAAAAVAAAAAAAAAAAAAAAAAAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABjAAAAZAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAFQAAABEAAAAAAAAAAAAAAAAAAAAcwAAAHQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMAAAB0AAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAVAAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABUAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAFMAAABUAAAAAAAAAAAAAAAAAAAAYwAAAGMAAABjAAAAYwAAAGMAAABjAAAAYwAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAUwAAAFQAAAAAAAAAAAAAAAAAAABzAAAAcwAAAHMAAABzAAAAcwAAAHMAAABzAAAAcwAAAHQAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABTAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAFMAAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAUwAAAFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASwAAAEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABDAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABbAAAAXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTAAAAVAAAAA==
   </data>
  </layer>
  <objectgroup name="iron">
   <object id="84" name="1" x="0" y="0" width="16" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
-  <object id="85" x="32" y="0" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
-  <object id="86" name="2" x="16" y="0" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
@@ -32,22 +22,7 @@
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="89" x="16" y="32" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
-  <object id="90" x="0" y="48" width="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
   <object id="91" x="16" y="32" width="16" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
-  <object id="92" x="0" y="48" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
@@ -67,11 +42,6 @@
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="97" x="32" y="80" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
   <object id="98" x="0" y="80" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
@@ -82,8 +52,7 @@
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="101" x="0" y="64" width="16" height="16"/>
-  <object id="102" x="16" y="96" width="16">
+  <object id="101" x="0" y="64" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
@@ -138,66 +107,147 @@
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="113" x="0" y="288" width="16" height="16"/>
-  <object id="114" x="16" y="288" width="16" height="16"/>
-  <object id="115" x="16" y="304" width="16" height="16"/>
-  <object id="116" x="0" y="304" width="16" height="16"/>
-  <object id="138" x="32" y="48" width="16" height="16">
+  <object id="113" x="0" y="288" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="139" x="32" y="64" width="16" height="16"/>
-  <object id="140" x="32" y="80" width="16" height="16">
+  <object id="114" x="16" y="288" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="141" x="32" y="96" width="16" height="16">
+  <object id="115" x="16" y="304" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="142" x="32" y="112" width="16" height="16">
+  <object id="116" x="0" y="304" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="143" x="48" y="48" width="16" height="16">
+  <object id="162" x="0" y="176" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="144" x="48" y="64" width="16" height="16">
+  <object id="163" x="16" y="176" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="145" x="64" y="64" width="16" height="16">
+  <object id="164" x="0" y="192" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="146" x="64" y="48" width="16" height="16">
+  <object id="165" x="16" y="192" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="147" x="80" y="48" width="16" height="16">
+  <object id="166" x="0" y="208" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="148" x="80" y="64" width="16" height="16">
+  <object id="167" x="16" y="208" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="149" x="96" y="48" width="16" height="16">
+  <object id="168" x="0" y="224" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
   </object>
+  <object id="169" x="16" y="224" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="170" x="0" y="240" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="171" x="16" y="240" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="172" x="0" y="256" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="173" x="16" y="256" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="174" x="0" y="272" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="175" x="16" y="272" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="176" x="288" y="0" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="177" x="304" y="0" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="178" x="288" y="16" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="179" x="304" y="16" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="180" x="288" y="32" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="181" x="304" y="32" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="182" x="288" y="48" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="183" x="304" y="48" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="184" x="288" y="64" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="220" x="16" y="0" width="16" height="16">
+   <properties>
+    <property name="type" value="iron"/>
+   </properties>
+  </object>
+  <object id="222" x="16" y="80" width="16" height="16"/>
  </objectgroup>
  <objectgroup name="base">
   <object id="159" x="144" y="288" width="32" height="32">
@@ -210,31 +260,6 @@
   <properties>
    <property name="type" value="clay"/>
   </properties>
-  <object id="129" x="64" y="160" width="16" height="16">
-   <properties>
-    <property name="type" value="clay"/>
-   </properties>
-  </object>
-  <object id="133" x="64" y="192" width="16" height="16">
-   <properties>
-    <property name="type" value="clay"/>
-   </properties>
-  </object>
-  <object id="134" x="80" y="192" width="16" height="16">
-   <properties>
-    <property name="type" value="clay"/>
-   </properties>
-  </object>
-  <object id="154" x="96" y="272" width="16" height="16">
-   <properties>
-    <property name="type" value="clay"/>
-   </properties>
-  </object>
-  <object id="153" x="96" y="256" width="16" height="16">
-   <properties>
-    <property name="type" value="clay"/>
-   </properties>
-  </object>
   <object id="152" x="96" y="240" width="16" height="16">
    <properties>
     <property name="type" value="clay"/>
@@ -245,22 +270,172 @@
     <property name="type" value="clay"/>
    </properties>
   </object>
-  <object id="150" x="96" y="208" width="16" height="16">
-   <properties>
-    <property name="type" value="clay"/>
-   </properties>
-  </object>
   <object id="157" x="80" y="176" width="16" height="16">
    <properties>
     <property name="type" value="clay"/>
    </properties>
   </object>
-  <object id="131" x="64" y="176" width="16" height="16">
+  <object id="130" x="80" y="160" width="16" height="16">
    <properties>
     <property name="type" value="clay"/>
    </properties>
   </object>
-  <object id="130" x="80" y="160" width="16" height="16">
+  <object id="186" x="80" y="80" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="187" x="80" y="96" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="188" x="80" y="112" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="189" x="80" y="128" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="190" x="80" y="144" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="191" x="96" y="176" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="192" x="96" y="160" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="193" x="96" y="144" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="194" x="96" y="128" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="195" x="96" y="112" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="196" x="96" y="96" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="197" x="96" y="80" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="198" x="192" y="80" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="199" x="208" y="80" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="200" x="192" y="96" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="201" x="208" y="96" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="202" x="192" y="112" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="203" x="208" y="112" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="204" x="192" y="240" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="205" x="192" y="224" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="206" x="208" y="224" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="207" x="208" y="240" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="208" x="80" y="224" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="209" x="80" y="240" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="210" x="192" y="144" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="211" x="208" y="128" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="212" x="208" y="144" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="213" x="208" y="160" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="214" x="192" y="160" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="215" x="192" y="176" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="216" x="208" y="176" width="16" height="16">
+   <properties>
+    <property name="type" value="clay"/>
+   </properties>
+  </object>
+  <object id="217" x="192" y="128" width="16" height="16">
    <properties>
     <property name="type" value="clay"/>
    </properties>

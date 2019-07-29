@@ -8,12 +8,47 @@
    </properties>
   </terrain>
  </terraintypes>
- <tile id="66" terrain=",,0,"/>
+ <tile id="66" terrain=",,0,">
+  <properties>
+   <property name="type" value="iron"/>
+  </properties>
+ </tile>
+ <tile id="67">
+  <properties>
+   <property name="type" value="iron"/>
+  </properties>
+ </tile>
+ <tile id="82">
+  <properties>
+   <property name="type" value="iron"/>
+  </properties>
+ </tile>
+ <tile id="83">
+  <properties>
+   <property name="type" value="iron"/>
+  </properties>
+ </tile>
  <tile id="98" terrain="0,0,0,0">
+  <properties>
+   <property name="type" value="clay"/>
+  </properties>
   <objectgroup draworder="index">
    <object id="1" x="8" y="8"/>
   </objectgroup>
  </tile>
- <tile id="114" terrain="0,0,0,0"/>
- <tile id="115" terrain="0,0,,"/>
+ <tile id="99">
+  <properties>
+   <property name="type" value="clay"/>
+  </properties>
+ </tile>
+ <tile id="114" terrain="0,0,0,0">
+  <properties>
+   <property name="type" value="clay"/>
+  </properties>
+ </tile>
+ <tile id="115" terrain="0,0,0,0">
+  <properties>
+   <property name="type" value="clay"/>
+  </properties>
+ </tile>
 </tileset>

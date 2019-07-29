@@ -20,11 +20,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game.actor.Bullet;
-import com.mygdx.game.actor.Enemy;
-import com.mygdx.game.actor.Player;
+import com.mygdx.game.actor.*;
+import com.mygdx.game.actor.bonus.BaseBonus;
+import com.mygdx.game.actor.tank.Enemy;
+import com.mygdx.game.actor.tank.Player;
+import com.mygdx.game.actor.tank.TankActor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,29 +39,37 @@ public class MyGdxGame extends ApplicationAdapter {
     private OrthogonalTiledMapRenderer renderer;
     private TiledMap map;
     private List<MapObject> brickList = new ArrayList<MapObject>();
+    private List<TiledMapTileLayer.Cell> brick2List = new ArrayList<TiledMapTileLayer.Cell>();
     private Player player;
     private Stage stage;
     TiledMapTileLayer mapLayer;
     public Pool<Bullet> pool;
-    public List<Bullet> runningBullet = new ArrayList<Bullet>();
+    public List<Bullet> runningBullet = new ArrayList<>();
     private List<Enemy> enemyList = new ArrayList<>();
+    private List<BaseBonus> bonusList = new ArrayList<>();
     private Viewport viewport;
     private MapObject base;
+    private int width = 640;
+    private int height = 480;
+    private Texture bonus;
+    private TankSpawner tankSpawner;
+    private RegionManager regionManager;
+    private BonusSpawner bonusSpawner;
 
     @Override
     public void create() {
-
         batch = new SpriteBatch();
         img = new Texture("tank_atlas.png");
-        final TextureRegion b = new TextureRegion(img, 192, 32, 8, 8);
+        bonus = new Texture("bonus.png");
+
+        regionManager = new RegionManager(img, bonus);
+        tankSpawner = new TankSpawner(regionManager);
+        bonusSpawner = new BonusSpawner(regionManager);
+        final TextureRegion bonus_1 = new TextureRegion(bonus, 0, 0, 16, 16);
         int width = Gdx.graphics.getWidth();
-//        int width = 160;
         int height = Gdx.graphics.getHeight();
-//        int height = 160;
 
         camera = new OrthographicCamera();
-//        camera.setToOrtho(true);
-//        camera.setToOrtho(true, 160, 160 * (height * 1.0f / width));
         camera.position.set(width / 2, height / 2, 0);
 
         camera.update();
@@ -74,26 +83,24 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.input.setInputProcessor(stage);
 
         init();
-        pool = new Pool<Bullet>(8) {
-            @Override
-            protected Bullet newObject() {
-                System.out.println("新建了一个对象");
-                return new Bullet(b);
-            }
-        };
-        Timer timer = new Timer();
-        timer.scheduleTask(new Timer.Task() {
-            @Override
-            public void run() {
-                spwanEnemy();
-            }
-        }, 2, 2);
+
+    }
+
+    public BaseBonus spawnBonus() {
+        BaseBonus bonus = bonusSpawner.randomSpawn(this);
+        bonusList.add(bonus);
+        stage.addActor(bonus);
+        bonus.active();
+        return bonus;
+    }
+
+    public void removeBonus(BaseBonus bonus) {
+        this.bonusList.remove(bonus);
     }
 
     private void init() {
-        TextureRegion region = map.getTileSets().getTileSet(0).getTile(100).getTextureRegion();
-        player = new Player(region, this);
-        player.setPosition(60, 320);
+        spawnBonus();
+        player = (Player) tankSpawner.spawn(Constants.TANK_TYPE_PLAYER, this, 60, 320);
         stage.addActor(player);
 
         mapLayer = (TiledMapTileLayer) map.getLayers().get("wall");
@@ -110,14 +117,34 @@ public class MyGdxGame extends ApplicationAdapter {
         for (MapObject object : base_objects) {
             base = object;
         }
-        TiledMapUtils.removeTiled(map, "wall", brickList.get(0));
-
+//        TiledMapUtils.removeTiled(map, "wall", brickList.get(0));
+        pool = new Pool<Bullet>(8) {
+            @Override
+            protected Bullet newObject() {
+                System.out.println("新建了一个对象");
+                return new Bullet(regionManager.getBullet());
+            }
+        };
+        Timer timer = new Timer();
+        timer.scheduleTask(new Timer.Task() {
+            @Override
+            public void run() {
+                spawnEnemy();
+            }
+        }, 2, 2, 10);
     }
 
-    private void spwanEnemy() {
-        TextureRegion region2 = map.getTileSets().getTileSet(0).getTile(108).getTextureRegion();
-        Enemy enemy = new Enemy(region2, this);
-        enemy.setPosition(100, 320);
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    private void spawnEnemy() {
+        Enemy enemy = (Enemy) (tankSpawner.randomSpawn( this));
+        enemy.setBonus(true);
         stage.addActor(enemy);
         enemy.startAttack();
         enemyList.add(enemy);
@@ -131,15 +158,15 @@ public class MyGdxGame extends ApplicationAdapter {
      * libgdx 会自动折算tiledmap 的坐标为左下角的
      */
     private void checkCollision(TiledMapTileLayer layer) {
-
         for (MapObject brick : brickList) {
             boolean collision = CollisionUtils.isCollision(
                     CollisionUtils.getRectangle(brick),
                     new Rectangle((int) (player.getX()), (int) (player.getY()), 16, 16));
             if (collision) {
-                System.out.println(brick.getName());
+                System.out.println("玩家和砖块碰撞");
             }
         }
+
         for (Bullet bullet : runningBullet) {
             if (!bullet.isActive()) {
                 continue;
@@ -201,6 +228,8 @@ public class MyGdxGame extends ApplicationAdapter {
             }
 
         }
+
+        checkBonus();
     }
 
     private boolean bulletHitWall(Bullet bullet, MapObject brick) {
@@ -223,22 +252,24 @@ public class MyGdxGame extends ApplicationAdapter {
 
     public boolean isCanMove(Actor actor, int direction) {
         Rectangle rectangle = CollisionUtils.getRectangle(actor);
-
+        int w = 1;
+        int offset = 0;
         switch (direction) {
             case Input.Keys.W:
-                rectangle.merge(rectangle.x, rectangle.y + rectangle.height + 2);
+                rectangle = new Rectangle(rectangle.x, rectangle.y + rectangle.height + offset, rectangle.width, w);
+//                rectangle.merge(rectangle.x, rectangle.y + rectangle.height + 1);
                 break;
             case Input.Keys.S:
-                rectangle.merge(rectangle.x, rectangle.y - 2);
-//                rectangle.translate(0, -2);
+                rectangle = new Rectangle(rectangle.x, rectangle.y - offset - w, rectangle.width, w);
+//                rectangle.merge(rectangle.x, rectangle.y - 1);
                 break;
             case Input.Keys.A:
-                rectangle.merge(rectangle.x - 2, rectangle.y);
-//                rectangle.translate(-2, 0);
+                rectangle = new Rectangle(rectangle.x - offset - w, rectangle.y, w, rectangle.height);
+//                rectangle.merge(rectangle.x - 1, rectangle.y);
                 break;
             case Input.Keys.D:
-                rectangle.merge(rectangle.x + rectangle.width + 2, rectangle.y);
-//                rectangle.translate(2, 0);
+                rectangle = new Rectangle(rectangle.x + rectangle.width + offset, rectangle.y, w, rectangle.height);
+//                rectangle.merge(rectangle.x + rectangle.width + 1, rectangle.y);
                 break;
         }
 
@@ -275,11 +306,27 @@ public class MyGdxGame extends ApplicationAdapter {
         stage.draw();
         checkCollision(mapLayer);
         checkDisposeBullet();
-        System.out.println(pool.getFree());
+//        System.out.println(pool.getFree());
+    }
+
+    private void checkBonus() {
+        Iterator<BaseBonus> iterator = bonusList.iterator();
+        while (iterator.hasNext()) {
+            BaseBonus bonus = iterator.next();
+            Rectangle rectangle1 = bonus.getRectangle();
+            Rectangle rectangle2 = player.getRectangle();
+            boolean collision = CollisionUtils.isCollision(rectangle1, rectangle2);
+            if (collision) {
+                player.onBonus(bonus);
+                bonus.remove();
+                iterator.remove();
+                break;
+            }
+        }
     }
 
     private void checkDisposeBullet() {
-        List<Bullet> list = new ArrayList<Bullet>();
+        List<Bullet> list = new ArrayList<>();
         for (Bullet bullet : runningBullet) {
             if (!bullet.isActive()) {
                 bullet.remove();

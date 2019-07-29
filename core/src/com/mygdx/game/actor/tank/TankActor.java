@@ -1,28 +1,34 @@
-package com.mygdx.game.actor;
+package com.mygdx.game.actor.tank;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.MyGdxGame;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.mygdx.game.actor.BaseActor;
+import com.mygdx.game.actor.Bullet;
+import com.mygdx.game.actor.bonus.BaseBonus;
 
 public class TankActor extends BaseActor {
     public static final int TANKSTATE_STOP = 0;
     public static final int TANKSTATE_MOVING = 1;
+
+
     private TextureRegion region;
     private int speed = 1;
-    private int direction = Input.Keys.W;
+    private int direction = Input.Keys.S;
     private int firePosition = 10;
     private MyGdxGame game;
-    private int life = 50;
+    private int blood = 50;
+    private int lives = 2;
     /**
      * 0 stop;1 moving
      */
     private int state = 0;
     private int bulletActiveCount = 1;
+    private int bulletDamage = Bullet.BULLET_LEVEL1;
+
 
     public int getSpeed() {
         return speed;
@@ -50,10 +56,11 @@ public class TankActor extends BaseActor {
 
     public void hitted(Bullet bullet) {
         int damage = bullet.getDamage();
-        this.life = this.life - damage;
-        if (this.life <= 0) {
+        this.blood = this.blood - damage;
+        if (this.blood <= 0) {
             die();
         }
+        onHit();
     }
 
     public int getBulletActiveCount() {
@@ -72,8 +79,28 @@ public class TankActor extends BaseActor {
         this.bulletActiveCount--;
     }
 
+    public int getBulletDamage() {
+        return bulletDamage;
+    }
+
+    public void setBulletDamage(int bulletDamage) {
+        this.bulletDamage = bulletDamage;
+    }
+
+    public void increaseLife() {
+        this.lives++;
+    }
+
+    public void decreaseBLife() {
+        this.lives--;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
     public boolean isDie() {
-        return this.life <= 0;
+        return this.blood <= 0;
     }
 
     public void die() {
@@ -112,6 +139,19 @@ public class TankActor extends BaseActor {
             return;
         }
 
+        if (getX() < 0) {
+            setX(0);
+        } else if (getX() + getWidth() > game.getWidth()) {
+            setX(game.getWidth() - getWidth());
+        }
+
+        if (getY() < 0) {
+            setY(0);
+        } else if (getY() > game.getHeight() - getHeight()) {
+            setY(game.getHeight() - getHeight());
+        }
+        Color color = batch.getColor();
+        batch.setColor(color.r, color.g, color.b, parentAlpha);
         batch.draw(region, getX(), getY(),
                 getOriginX(), getOriginY(),
                 getWidth(), getHeight(),
@@ -158,6 +198,7 @@ public class TankActor extends BaseActor {
         bullet.setDirection(getDirection());
         bullet.setType(getBulletType());
         bullet.setTankActor(this);
+        bullet.setDamage(getBulletDamage());
         getStage().addActor(bullet);
         decreaseBulletActiveCount();
         game.runningBullet.add(bullet);
@@ -174,6 +215,10 @@ public class TankActor extends BaseActor {
     }
 
     public void onHit() {
+
+    }
+
+    public void onBonus(BaseBonus bonus) {
         // 给到礼物
     }
 }

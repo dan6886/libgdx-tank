@@ -44,7 +44,7 @@ public class TiledMapUtils {
         int tilewidth = map.getProperties().get("tilewidth", Integer.class);
         int row = (int) (rectangle.x / tilewidth);
         int col = (int) (rectangle.y / tilewidth);
-        mapLayer.getCell(row, col).setTile(null);
+         mapLayer.getCell(row, col).setTile(null);
 
         System.out.println("test");
     }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.game.actor.tank.TankActor;
 
 
 public class Bullet extends BaseActor {
@@ -97,9 +98,13 @@ public class Bullet extends BaseActor {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Rectangle getRectangle() {
-        final int changetTo = 18;
+        final int changetTo = 12 ;
         int extend = (int) (changetTo - getWidth()) / 2;
         Rectangle rectangle = new Rectangle((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());
         switch (direction) {

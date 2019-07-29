@@ -1,12 +1,16 @@
-package com.mygdx.game.actor;
+package com.mygdx.game.actor.tank;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.actor.bonus.BaseBonus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +22,13 @@ public class Player extends TankActor implements Disposable, InputProcessor {
     List<Integer> noPassDirection = new ArrayList<Integer>();
     private MyGdxGame game;
     private int firePosition = 10;
-
     public Player(TextureRegion region, MyGdxGame game) {
         super(region, game);
         this.region = region;
         this.game = game;
-        Gdx.input.setInputProcessor(this);
         setType("Player");
+        Gdx.input.setInputProcessor(this);
+        setDirection(Input.Keys.W);
         setBulletActiveCount(2);
     }
 
@@ -39,37 +43,87 @@ public class Player extends TankActor implements Disposable, InputProcessor {
         if (isPressedUp) {
             if (game.isCanMove(this, Input.Keys.W)) {
                 setY(getY() + getSpeed());
-                setState(TANKSTATE_MOVING);
                 isMoveing = true;
             }
             lookAt(Input.Keys.W);
         } else if (isPressedDown) {
             if (game.isCanMove(this, Input.Keys.S)) {
                 setY(getY() - getSpeed());
-                setState(TANKSTATE_MOVING);
                 isMoveing = true;
             }
             lookAt(Input.Keys.S);
         } else if (isPressedLeft) {
             if (game.isCanMove(this, Input.Keys.A)) {
                 setX(getX() - getSpeed());
-                setState(TANKSTATE_MOVING);
                 isMoveing = true;
             }
             lookAt(Input.Keys.A);
         } else if (isPressedRight) {
             if (game.isCanMove(this, Input.Keys.D)) {
                 setX(getX() + getSpeed());
-                setState(TANKSTATE_MOVING);
                 isMoveing = true;
             }
             lookAt(Input.Keys.D);
         }
-        if (!isMoveing) {
-            setState(TANKSTATE_STOP);
+        if (isMoveing) {
+            if (getState() == TANKSTATE_STOP) {
+                setState(TANKSTATE_MOVING);
+            }
+        } else {
+            if (getState() == TANKSTATE_MOVING) {
+//                adjustStopPosition();
+                setState(TANKSTATE_STOP);
+            }
         }
 
     }
+
+    private void adjustStopPosition() {
+        float x = (int) ((getX() + getWidth()) / getWidth()) * getWidth();
+        float y = (int) ((getY() + getHeight()) / getHeight()) * getHeight();
+        setPosition(x, y);
+        System.out.println(getX() + "|" + getY());
+    }
+
+    private void startMove() {
+        MoveByAction action = Actions.moveBy(0, 0, 0.05F);
+        switch (getDirection()) {
+            case Input.Keys.W:
+                action.setAmountY(8);
+                break;
+            case Input.Keys.S:
+                action.setAmountY(-8);
+                break;
+            case Input.Keys.A:
+                action.setAmountX(-8);
+                break;
+            case Input.Keys.D:
+                action.setAmountX(8);
+                break;
+        }
+        sequenceAction.addAction(Actions.run(before));
+        sequenceAction.addAction(action);
+        sequenceAction.addAction(Actions.run(after));
+        addAction(sequenceAction);
+    }
+
+    SequenceAction sequenceAction = Actions.sequence();
+    private Runnable before = new Runnable() {
+        @Override
+        public void run() {
+            if (getState() == TANKSTATE_STOP) {
+                removeAction(sequenceAction);
+            }
+        }
+    };
+
+    private Runnable after = new Runnable() {
+        @Override
+        public void run() {
+            removeAction(sequenceAction);
+            startMove();
+        }
+    };
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
@@ -81,6 +135,16 @@ public class Player extends TankActor implements Disposable, InputProcessor {
 
     }
 
+    @Override
+    public void onHit() {
+        super.onHit();
+    }
+
+    @Override
+    public void onBonus(BaseBonus bonus) {
+        bonus.applyToPlayer(this);
+        System.out.println("礼物碰撞了" + bonus.toString());
+    }
 
     @Override
     public boolean keyDown(int keycode) {
@@ -126,4 +190,5 @@ public class Player extends TankActor implements Disposable, InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
 }

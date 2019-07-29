@@ -1,4 +1,4 @@
-package com.mygdx.game.actor;
+package com.mygdx.game.actor.tank;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -34,6 +34,7 @@ public class Enemy extends TankActor {
         directions.add(Input.Keys.S);
         directions.add(Input.Keys.A);
         directions.add(Input.Keys.D);
+        setDirection(Input.Keys.S);
         setBulletActiveCount(1);
     }
 
@@ -179,5 +180,16 @@ public class Enemy extends TankActor {
     public void die() {
         timer.clear();
         this.remove();
+    }
+
+    @Override
+    public void onHit() {
+        if (isBonus()) {
+            // 产生礼物,调用game的刷新管理器生成礼物
+            game.spawnBonus();
+            isBonus = false;
+
+        }
+
     }
 }
