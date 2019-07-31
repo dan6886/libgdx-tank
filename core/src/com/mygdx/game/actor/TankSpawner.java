@@ -15,9 +15,18 @@ import java.util.Random;
 public class TankSpawner {
 
     RegionManager manager;
+    private int count = 0;
 
     public TankSpawner(RegionManager manager) {
         this.manager = manager;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public TankActor spawn(String type, MyGdxGame game, float x, float y) {
@@ -37,6 +46,7 @@ public class TankSpawner {
                 break;
 
         }
+
         return actor;
     }
 
@@ -49,6 +59,7 @@ public class TankSpawner {
     private Enemy makeEnemy(String type, MyGdxGame game) {
         TextureRegion playerRegion = manager.getEnemy(type);
         Enemy enemy = new Enemy(playerRegion, game);
+        count--;
         return enemy;
     }
 

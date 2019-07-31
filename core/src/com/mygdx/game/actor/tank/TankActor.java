@@ -18,7 +18,7 @@ public class TankActor extends BaseActor {
     private TextureRegion region;
     private int speed = 1;
     private int direction = Input.Keys.S;
-    private int firePosition = 10;
+    private int firePosition = 5;
     private MyGdxGame game;
     private int blood = 50;
     private int lives = 2;
@@ -213,12 +213,11 @@ public class TankActor extends BaseActor {
         }
         return "";
     }
-
+    // 留给子类
     public void onHit() {
 
     }
-
+    // 留给子类
     public void onBonus(BaseBonus bonus) {
-        // 给到礼物
     }
 }

@@ -2,6 +2,7 @@ package com.mygdx.game.actor.tank;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -22,12 +23,14 @@ public class Player extends TankActor implements Disposable, InputProcessor {
     List<Integer> noPassDirection = new ArrayList<Integer>();
     private MyGdxGame game;
     private int firePosition = 10;
+
     public Player(TextureRegion region, MyGdxGame game) {
         super(region, game);
         this.region = region;
         this.game = game;
         setType("Player");
-        Gdx.input.setInputProcessor(this);
+        InputMultiplexer inputProcessor = (InputMultiplexer) Gdx.input.getInputProcessor();
+        inputProcessor.addProcessor(this);
         setDirection(Input.Keys.W);
         setBulletActiveCount(2);
     }
@@ -150,6 +153,7 @@ public class Player extends TankActor implements Disposable, InputProcessor {
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Input.Keys.SPACE:
+                System.out.println("发射");
                 fireBullet();
                 break;
         }
