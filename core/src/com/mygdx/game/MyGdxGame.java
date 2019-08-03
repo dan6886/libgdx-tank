@@ -16,9 +16,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Pool;
@@ -66,6 +64,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private int gameState = GAME_RUNNING;
     private int enemyCount = 2;
     private Window window;
+    private Timer timer;
 
     @Override
     public void create() {
@@ -87,6 +86,7 @@ public class MyGdxGame extends ApplicationAdapter {
         camera.update();
         loader = new TmxMapLoader();
         map = loader.load("110.tmx");
+//        map = loader.load("level-2.tmx");
 
 
         viewport = new FitViewport(640, 480, camera);
@@ -98,6 +98,42 @@ public class MyGdxGame extends ApplicationAdapter {
 //        inputProcessor.addProcessor(stage2);
         inputProcessor.addProcessor(stage2);
         init();
+    }
+
+    private void startInit() {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                reset();
+                map = loader.load("level-2.tmx");
+                renderer = new OrthogonalTiledMapRenderer(map);
+                init();
+            }
+        });
+    }
+
+    private void reset() {
+        timer.clear();
+        brickList.clear();
+        tankSpawner.setCount(enemyCount);
+        player.remove();
+        player.dispose();
+        for (Enemy enemy : enemyList) {
+            enemy.remove();
+        }
+        enemyList.clear();
+
+        for (Bullet b : runningBullet) {
+            b.remove();
+        }
+        runningBullet.clear();
+
+        for (BaseBonus bonus : bonusList) {
+            bonus.remove();
+        }
+        bonusList.clear();
+        pool.clear();
+        gameState = GAME_RUNNING;
     }
 
     public BaseBonus spawnBonus() {
@@ -113,10 +149,8 @@ public class MyGdxGame extends ApplicationAdapter {
     }
 
     private void init() {
-        spawnBonus();
         player = (Player) tankSpawner.spawn(Constants.TANK_TYPE_PLAYER, this, 60, 320);
         stage.addActor(player);
-
         mapLayer = (TiledMapTileLayer) map.getLayers().get("wall");
 
         MapObjects iron_objects = map.getLayers().get("iron").getObjects();
@@ -138,7 +172,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 return new Bullet(regionManager.getBullet());
             }
         };
-        Timer timer = new Timer();
+        timer = new Timer();
         timer.scheduleTask(new Timer.Task() {
             @Override
             public void run() {
@@ -310,10 +344,6 @@ public class MyGdxGame extends ApplicationAdapter {
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//		batch.begin();
-//		batch.draw(img, 150, 0);
-//		batch.end();
-//        System.out.println("render");
         renderer.setView((OrthographicCamera) stage.getCamera());
         renderer.render();
         if (isGameFinish()) {
@@ -326,7 +356,6 @@ public class MyGdxGame extends ApplicationAdapter {
         checkCollision(mapLayer);
         checkDisposeBullet();
         checkGameFinish();
-//        System.out.println(pool.getFree());
     }
 
     private void showWindow() {
@@ -340,6 +369,9 @@ public class MyGdxGame extends ApplicationAdapter {
         // 拖动TitleLabel，window会移动
         window.setMovable(true);
 
+        Label label = new Label(getTips(), skin);
+        label.setX(0);
+        label.setY(30);
         TextButton tbOk = new TextButton("OK", skin);
         TextButton tbCancel = new TextButton("CANCEL", skin);
         tbOk.setSize(tbCancel.getPrefWidth(), tbCancel.getPrefHeight());
@@ -356,6 +388,8 @@ public class MyGdxGame extends ApplicationAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.log("TAG", "dialog ok button is clicked");
+                startInit();
+
             }
 
         });
@@ -364,12 +398,22 @@ public class MyGdxGame extends ApplicationAdapter {
         tbCancel.setX(window.getWidth() / 2 + 10);
         tbCancel.setY(10);
         // 这个地方用addActor方法，不能使用add方法，后面将讲解Table的时候会涉及到
+        window.addActor(label);
         window.addActor(tbOk);
         window.addActor(tbCancel);
         Gdx.app.log("TAG", "window preWidth=" + window.getPrefWidth() + "window width=" + window.getWidth());
 //      window.pack();
         stage2.addActor(window);
 
+    }
+
+    private String getTips() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Hit:").append("\n")
+                .append("A     :     ").append("20\n")
+                .append("A     :     ").append("20\n")
+                .append("A     :     ").append("20\n");
+        return sb.toString();
     }
 
     private boolean isGameFinish() {
