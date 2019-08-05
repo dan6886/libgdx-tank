@@ -62,15 +62,17 @@ public class MyGdxGame extends ApplicationAdapter {
     public static final int GAME_ENEMY_WIN = 2;
     public static final int GAME_PLAYER_WIN = 3;
     private int gameState = GAME_RUNNING;
-    private int enemyCount = 20;
+    private int enemyCount = 5;
     private Window window;
     private Timer timer;
     private Rectangle bounds = new Rectangle(0, 0, 320, 320);
     private Map<String, Vector2> enemySpawnPosition = new HashMap<>();
     private Map<String, Vector2> playerSpawnPosition = new HashMap<>();
+    private KillCounter counter;
 
     @Override
     public void create() {
+        counter = new KillCounter();
         batch = new SpriteBatch();
         img = new Texture("tank_atlas.png");
         bonus = new Texture("bonus.png");
@@ -115,6 +117,7 @@ public class MyGdxGame extends ApplicationAdapter {
     }
 
     private void reset() {
+        counter.clear();
         timer.clear();
         brickList.clear();
         tankSpawner.setCount(enemyCount);
@@ -134,6 +137,7 @@ public class MyGdxGame extends ApplicationAdapter {
             bonus.remove();
         }
         bonusList.clear();
+
         pool.clear();
         gameState = GAME_RUNNING;
     }
@@ -170,7 +174,6 @@ public class MyGdxGame extends ApplicationAdapter {
 
         MapObjects spawn = map.getLayers().get("spawn").getObjects();
         for (MapObject object : spawn) {
-
             String type = object.getProperties().get("type", String.class);
             Float x = object.getProperties().get("x", Float.class);
             Float y = object.getProperties().get("y", Float.class);
@@ -260,6 +263,7 @@ public class MyGdxGame extends ApplicationAdapter {
                     if (CollisionUtils.isCollision(bullet.getRectangle(), enemy.getRectangle())) {
                         enemy.hitted(bullet);
                         if (enemy.isDie()) {
+                            counter.killOne(enemy);
                             iterator.remove();
                         }
                         bullet.recycle();
@@ -439,10 +443,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private String getTips() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Hit:").append("\n")
-                .append("A     :     ").append("20\n")
-                .append("A     :     ").append("20\n")
-                .append("A     :     ").append("20\n");
+        sb.append("Hit:").append("\n").append(counter.getKillMessage());
+
         return sb.toString();
     }
 

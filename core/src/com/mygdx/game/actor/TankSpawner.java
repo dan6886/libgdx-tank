@@ -18,6 +18,7 @@ public class TankSpawner {
     private int count = 0;
     private Map<String, Vector2> enemySpawnPosition = new HashMap<>();
     private Map<String, Vector2> playerSpawnPosition = new HashMap<>();
+
     public TankSpawner(RegionManager manager) {
         this.manager = manager;
     }
@@ -68,7 +69,7 @@ public class TankSpawner {
 
     private Enemy makeEnemy(String type, MyGdxGame game) {
         TextureRegion playerRegion = manager.getEnemy(type);
-        Enemy enemy = new Enemy(playerRegion, game);
+        Enemy enemy = new Enemy(type, playerRegion, game);
         count--;
         return enemy;
     }

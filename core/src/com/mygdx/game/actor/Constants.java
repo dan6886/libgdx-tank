@@ -9,7 +9,8 @@ public class Constants {
 
     public static final String BONUS_TYPE_LIFE = "life";
     public static final String BONUS_TYPE_SUPER_BULLET = "superbullet";
-    public static final String[] BONUS_TYPE_LIST = new String[]{BONUS_TYPE_LIFE, BONUS_TYPE_SUPER_BULLET};
+    public static final String BONUS_TYPE_ADD_BULLET = "addbullet";
+    public static final String[] BONUS_TYPE_LIST = new String[]{BONUS_TYPE_LIFE, BONUS_TYPE_SUPER_BULLET, BONUS_TYPE_ADD_BULLET};
 
     public static final String TANK_TYPE_PLAYER = "player";
     public static final String TANK_TYPE_ENEMY1 = "enemy1";

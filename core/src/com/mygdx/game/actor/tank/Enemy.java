@@ -26,8 +26,9 @@ public class Enemy extends TankActor {
      */
     private boolean isBonus = false;
 
-    public Enemy(TextureRegion region, MyGdxGame game) {
+    public Enemy(String type, TextureRegion region, MyGdxGame game) {
         super(region, game);
+        setType(type);
         this.region = region;
         this.game = game;
         directions.add(Input.Keys.W);

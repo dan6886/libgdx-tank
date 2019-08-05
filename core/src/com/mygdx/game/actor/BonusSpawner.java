@@ -3,6 +3,7 @@ package com.mygdx.game.actor;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.actor.bonus.BaseBonus;
+import com.mygdx.game.actor.bonus.BulletAddBonus;
 import com.mygdx.game.actor.bonus.LifeBonus;
 import com.mygdx.game.actor.bonus.SuperBulletBonus;
 import com.mygdx.game.actor.tank.Enemy;
@@ -31,6 +32,10 @@ public class BonusSpawner {
             case Constants.BONUS_TYPE_SUPER_BULLET:
                 actor = new SuperBulletBonus(region, game);
                 actor.setPosition(x, y);
+                break;
+            case Constants.BONUS_TYPE_ADD_BULLET:
+                actor = new BulletAddBonus(region, game);
+                break;
         }
         return actor;
     }

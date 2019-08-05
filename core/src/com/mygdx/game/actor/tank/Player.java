@@ -32,7 +32,7 @@ public class Player extends TankActor implements Disposable, InputProcessor {
         InputMultiplexer inputProcessor = (InputMultiplexer) Gdx.input.getInputProcessor();
         inputProcessor.addProcessor(this);
         setDirection(Input.Keys.W);
-        setBulletActiveCount(20);
+        setBulletActiveCount(1);
     }
 
     @Override
