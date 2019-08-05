@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -28,8 +29,7 @@ import com.mygdx.game.actor.bonus.BaseBonus;
 import com.mygdx.game.actor.tank.Enemy;
 import com.mygdx.game.actor.tank.Player;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 
 public class MyGdxGame extends ApplicationAdapter {
@@ -42,7 +42,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private List<MapObject> brickList = new ArrayList<MapObject>();
     private List<TiledMapTileLayer.Cell> brick2List = new ArrayList<TiledMapTileLayer.Cell>();
     private Player player;
-    private Stage stage;
+    private Stage gameStage;
     private Stage stage2;
     TiledMapTileLayer mapLayer;
     public Pool<Bullet> pool;
@@ -62,9 +62,12 @@ public class MyGdxGame extends ApplicationAdapter {
     public static final int GAME_ENEMY_WIN = 2;
     public static final int GAME_PLAYER_WIN = 3;
     private int gameState = GAME_RUNNING;
-    private int enemyCount = 2;
+    private int enemyCount = 20;
     private Window window;
     private Timer timer;
+    private Rectangle bounds = new Rectangle(0, 0, 320, 320);
+    private Map<String, Vector2> enemySpawnPosition = new HashMap<>();
+    private Map<String, Vector2> playerSpawnPosition = new HashMap<>();
 
     @Override
     public void create() {
@@ -91,11 +94,10 @@ public class MyGdxGame extends ApplicationAdapter {
 
         viewport = new FitViewport(640, 480, camera);
         renderer = new OrthogonalTiledMapRenderer(map);
-        stage = new Stage(viewport);
+        gameStage = new Stage(viewport);
         stage2 = new Stage(viewport);
         Gdx.input.setInputProcessor(new InputMultiplexer());
         InputMultiplexer inputProcessor = (InputMultiplexer) Gdx.input.getInputProcessor();
-//        inputProcessor.addProcessor(stage2);
         inputProcessor.addProcessor(stage2);
         init();
     }
@@ -139,7 +141,7 @@ public class MyGdxGame extends ApplicationAdapter {
     public BaseBonus spawnBonus() {
         BaseBonus bonus = bonusSpawner.randomSpawn(this);
         bonusList.add(bonus);
-        stage.addActor(bonus);
+        gameStage.addActor(bonus);
         bonus.active();
         return bonus;
     }
@@ -149,8 +151,8 @@ public class MyGdxGame extends ApplicationAdapter {
     }
 
     private void init() {
-        player = (Player) tankSpawner.spawn(Constants.TANK_TYPE_PLAYER, this, 60, 320);
-        stage.addActor(player);
+
+
         mapLayer = (TiledMapTileLayer) map.getLayers().get("wall");
 
         MapObjects iron_objects = map.getLayers().get("iron").getObjects();
@@ -165,6 +167,22 @@ public class MyGdxGame extends ApplicationAdapter {
         for (MapObject object : base_objects) {
             base = object;
         }
+
+        MapObjects spawn = map.getLayers().get("spawn").getObjects();
+        for (MapObject object : spawn) {
+
+            String type = object.getProperties().get("type", String.class);
+            Float x = object.getProperties().get("x", Float.class);
+            Float y = object.getProperties().get("y", Float.class);
+            if (type.contains("enemy")) {
+                enemySpawnPosition.put(type, new Vector2(x, y));
+            } else if (type.contains("player")) {
+                playerSpawnPosition.put(type, new Vector2(x, y));
+            }
+            System.out.println(type + "|" + x + "|" + y);
+        }
+        tankSpawner.setEnemySpawnPosition(enemySpawnPosition);
+        tankSpawner.setPlayerSpawnPosition(playerSpawnPosition);
         pool = new Pool<Bullet>(8) {
             @Override
             protected Bullet newObject() {
@@ -179,7 +197,9 @@ public class MyGdxGame extends ApplicationAdapter {
                 spawnEnemy();
             }
         }, 2, 2, enemyCount - 1);
-//    showWindow();
+//        showWindow();
+        player = (Player) tankSpawner.spawn(Constants.TANK_TYPE_PLAYER, this, 60, 320);
+        gameStage.addActor(player);
     }
 
     public int getWidth() {
@@ -190,10 +210,14 @@ public class MyGdxGame extends ApplicationAdapter {
         return height;
     }
 
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
     private void spawnEnemy() {
         Enemy enemy = (Enemy) (tankSpawner.randomSpawn(this));
         enemy.setBonus(true);
-        stage.addActor(enemy);
+        gameStage.addActor(enemy);
         enemy.startAttack();
         enemyList.add(enemy);
     }
@@ -273,7 +297,7 @@ public class MyGdxGame extends ApplicationAdapter {
             if (collision) {
                 bullet.recycle();
                 System.out.println("基地被攻击了");
-                gameState = GAME_ENEMY_WIN;
+//                gameState = GAME_ENEMY_WIN;
             }
 
         }
@@ -322,8 +346,12 @@ public class MyGdxGame extends ApplicationAdapter {
                 break;
         }
 
-
-        if (rectangle.x < 0 || rectangle.y < 0 || rectangle.x + rectangle.width > 640 || rectangle.y + rectangle.height > 480) {
+        // 检测是否出界
+        bounds.contains(rectangle);
+//        if (rectangle.x < 0 || rectangle.y < 0 || rectangle.x + rectangle.width > 640 || rectangle.y + rectangle.height > 480) {
+//            return false;
+//        }
+        if (!bounds.contains(rectangle)) {
             return false;
         }
         for (MapObject brick : brickList) {
@@ -344,15 +372,17 @@ public class MyGdxGame extends ApplicationAdapter {
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        renderer.setView((OrthographicCamera) stage.getCamera());
+        renderer.setView((OrthographicCamera) gameStage.getCamera());
         renderer.render();
         if (isGameFinish()) {
             stage2.act();
             stage2.draw();
             return;
         }
-        stage.act();
-        stage.draw();
+        stage2.act();
+        stage2.draw();
+        gameStage.act();
+        gameStage.draw();
         checkCollision(mapLayer);
         checkDisposeBullet();
         checkGameFinish();
@@ -460,8 +490,8 @@ public class MyGdxGame extends ApplicationAdapter {
                 pool.free(bullet);
                 continue;
             }
-            boolean outSpace = bullet.getX() < 0 || bullet.getX() > 640 | bullet.getY() < 0 || bullet.getY() > 600;
-            if (outSpace) {
+            // 检测子弹是否出界
+            if (!bounds.contains(bullet.getRectangle())) {
                 bullet.recycle();
                 bullet.remove();
                 list.add(bullet);

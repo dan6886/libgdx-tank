@@ -37,8 +37,8 @@ public class BonusSpawner {
 
     public BaseBonus randomSpawn(MyGdxGame game) {
         Random random = new Random();
-        int w = random.nextInt(game.getWidth() - 16);
-        int h = random.nextInt(game.getHeight() - 16);
+        int w = (int) (game.getBounds().x) + random.nextInt((int) (game.getBounds().width) - 16);
+        int h = (int) (game.getBounds().y) + random.nextInt((int) (game.getBounds().height) - 16);
         return spawn(randType(), game, w, h);
     }
 

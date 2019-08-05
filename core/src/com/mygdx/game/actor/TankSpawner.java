@@ -4,19 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.actor.bonus.BaseBonus;
 import com.mygdx.game.actor.tank.Enemy;
 import com.mygdx.game.actor.tank.Player;
 import com.mygdx.game.actor.tank.TankActor;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class TankSpawner {
 
     RegionManager manager;
     private int count = 0;
-
+    private Map<String, Vector2> enemySpawnPosition = new HashMap<>();
+    private Map<String, Vector2> playerSpawnPosition = new HashMap<>();
     public TankSpawner(RegionManager manager) {
         this.manager = manager;
     }
@@ -29,12 +30,21 @@ public class TankSpawner {
         this.count = count;
     }
 
+    public void setEnemySpawnPosition(Map<String, Vector2> positions) {
+        this.enemySpawnPosition = positions;
+    }
+
+    public void setPlayerSpawnPosition(Map<String, Vector2> playerSpawnPosition) {
+        this.playerSpawnPosition = playerSpawnPosition;
+    }
+
     public TankActor spawn(String type, MyGdxGame game, float x, float y) {
         TankActor actor = null;
         switch (type) {
             case Constants.TANK_TYPE_PLAYER:
                 actor = makePlayer(game);
-                actor.setPosition(x, y);
+                Vector2 v = playerSpawnPosition.get("player");
+                actor.setPosition(v.x, v.y);
                 break;
             case Constants.TANK_TYPE_ENEMY1:
                 actor = makeEnemy(type, game);
@@ -81,7 +91,8 @@ public class TankSpawner {
 
     public Vector2 randPosition() {
         Random random = new Random();
-        int i = random.nextInt(Constants.ENEMY_SPAWN_POSITION.length);
-        return Constants.ENEMY_SPAWN_POSITION[i];
+        int i = random.nextInt(enemySpawnPosition.size());
+        System.out.println(i);
+        return enemySpawnPosition.get("enemy" + i);
     }
 }

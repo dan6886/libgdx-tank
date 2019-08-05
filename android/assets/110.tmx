@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextobjectid="223">
+<map version="1.0" tiledversion="1.1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextobjectid="230">
  <tileset firstgid="1" source="tank_atlas.xml"/>
- <layer name="wall" width="20" height="20">
+ <layer name="wall" width="20" height="20" visible="0">
   <data encoding="base64">
    QwAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABTAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAEQAAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAARAAAAEMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABEAAAAUwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAEQAAABTAAAAAAAAAAAAAAAAAAAAYwAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAVAAAAFMAAAAAAAAAAAAAAAAAAABjAAAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYwAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABTAAAAUwAAAAAAAAAAAAAAAAAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABjAAAAZAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAFMAAABUAAAAAAAAAAAAAAAAAAAAYwAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAUwAAAFQAAAAAAAAAAAAAAAAAAABjAAAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYwAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABTAAAAVAAAAAAAAAAAAAAAAAAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABjAAAAZAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAFQAAABEAAAAAAAAAAAAAAAAAAAAcwAAAHQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMAAAB0AAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAVAAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABUAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAFMAAABUAAAAAAAAAAAAAAAAAAAAYwAAAGMAAABjAAAAYwAAAGMAAABjAAAAYwAAAGMAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAUwAAAFQAAAAAAAAAAAAAAAAAAABzAAAAcwAAAHMAAABzAAAAcwAAAHMAAABzAAAAcwAAAHQAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABTAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDAAAARAAAAFMAAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEMAAABEAAAAUwAAAFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASwAAAEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAEQAAABDAAAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABbAAAAXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTAAAAVAAAAA==
   </data>
  </layer>
+ <objectgroup name="spawn">
+  <properties>
+   <property name="type" value="player"/>
+  </properties>
+  <object id="224" x="112" y="304" width="16" height="16">
+   <properties>
+    <property name="type" value="player"/>
+   </properties>
+  </object>
+  <object id="226" x="0" y="16" width="16" height="16">
+   <properties>
+    <property name="type" value="enemy0"/>
+   </properties>
+  </object>
+  <object id="227" x="144" y="16" width="16" height="16">
+   <properties>
+    <property name="type" value="enemy1"/>
+   </properties>
+  </object>
+  <object id="228" x="288" y="16" width="16" height="16">
+   <properties>
+    <property name="type" value="enemy2"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup name="iron">
-  <object id="84" name="1" x="0" y="0" width="16" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
-  <object id="87" x="16" y="16" width="16" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
-  <object id="88" x="0" y="16" width="16" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
   <object id="91" x="16" y="32" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
@@ -197,26 +207,6 @@
     <property name="type" value="iron"/>
    </properties>
   </object>
-  <object id="176" x="288" y="0" width="16" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
-  <object id="177" x="304" y="0" width="16" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
-  <object id="178" x="288" y="16" width="16" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
-  <object id="179" x="304" y="16" width="16" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
   <object id="180" x="288" y="32" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
@@ -238,11 +228,6 @@
    </properties>
   </object>
   <object id="184" x="288" y="64" width="16" height="16">
-   <properties>
-    <property name="type" value="iron"/>
-   </properties>
-  </object>
-  <object id="220" x="16" y="0" width="16" height="16">
    <properties>
     <property name="type" value="iron"/>
    </properties>
